@@ -514,58 +514,6 @@ nav.scrolled {
 .benefit-card h4 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
 .benefit-card p { font-size: 14px; color: var(--muted); line-height: 1.75; }
 
-/* ═══════════ TIMELINE / HACKATHON FLOW ═══════════ */
-.timeline-wrap { position: relative; padding: 20px 0; }
-.timeline-line {
-  position: absolute; left: 50%; top: 0; bottom: 0; width: 2px;
-  background: linear-gradient(180deg, transparent, rgba(255,69,0,.3) 10%, rgba(255,140,0,.5) 50%, rgba(255,69,0,.3) 90%, transparent);
-  transform: translateX(-50%);
-}
-.timeline-line::after {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 80px;
-  background: linear-gradient(180deg, var(--fire), transparent);
-  animation: timelineScan 4s ease-in-out infinite;
-  box-shadow: 0 0 20px var(--fire);
-}
-@keyframes timelineScan { 0%{top:-80px}100%{top:100%} }
-
-.timeline-items { display: flex; flex-direction: column; gap: 40px; }
-.titem {
-  display: grid; grid-template-columns: 1fr 60px 1fr; align-items: center; gap: 24px;
-  opacity: 0; transform: translateY(30px);
-}
-.titem.visible { opacity: 1; transform: translateY(0); transition: all .7s ease; }
-.titem-content {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 16px; padding: 24px; position: relative; overflow: hidden;
-  transition: all .4s cubic-bezier(.34,1.2,.64,1);
-}
-.titem-content:hover { border-color: rgba(255,140,0,.3); transform: scale(1.02); box-shadow: 0 10px 40px rgba(0,0,0,.3); }
-.titem-content::before {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg, transparent 40%, rgba(255,140,0,.04) 50%, transparent 60%);
-  background-size: 200% 200%; animation: shimmer 3s ease-in-out infinite;
-}
-.titem.right .titem-content { grid-column: 3; }
-.titem.left .titem-content { grid-column: 1; }
-.titem-dot {
-  width: 40px; height: 40px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--fire), var(--fire2));
-  border: 3px solid var(--dark);
-  display: grid; place-items: center; font-size: 18px;
-  box-shadow: 0 0 20px rgba(255,69,0,.5), 0 0 40px rgba(255,69,0,.2);
-  position: relative; z-index: 2; justify-self: center;
-  animation: dotPulse 2s ease-in-out infinite;
-}
-@keyframes dotPulse { 0%,100%{box-shadow:0 0 15px rgba(255,69,0,.4)}50%{box-shadow:0 0 30px rgba(255,69,0,.7), 0 0 60px rgba(255,69,0,.3)} }
-.titem-time { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fire2); letter-spacing: .1em; margin-bottom: 6px; text-transform: uppercase; }
-.titem-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-.titem-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
-.titem.right .titem-content { grid-column: 3 / 4; }
-.titem.left .titem-content { grid-column: 1 / 2; }
-.titem.right .titem-empty { grid-column: 1 / 2; }
-.titem.left .titem-empty { grid-column: 3 / 4; }
-
 /* ═══════════ EVENT CARD ═══════════ */
 .events-grid.single-event { display: block; }
 .event-card.featured {
@@ -719,7 +667,6 @@ footer {
   </a>
   <ul class="nav-links">
     <li><button class="nav-link-btn" onclick="goTo('about')">About</button></li>
-    <li><button class="nav-link-btn" onclick="goTo('schedule')">Schedule</button></li>
     <li><button class="nav-link-btn" onclick="goTo('events')">Event</button></li>
     <li><button class="nav-link-btn" onclick="goTo('why-participate')">Why Join</button></li>
     <li><a href="register.html" class="btn-nav">Register →</a></li>
@@ -844,76 +791,6 @@ footer {
   <div class="event-tagline reveal">
     <h3>Innovate. Code. Transform.</h3>
     <p>Build solutions that matter. Compete for glory. Network with the best minds in the room.</p>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- HACKATHON TIMELINE -->
-<section class="section" id="schedule" style="position:relative; overflow:hidden;">
-  <div class="glow-orb" style="width:400px;height:400px;background:rgba(255,140,0,.04);left:-100px;top:50%;"></div>
-  <div class="section-label reveal">Timeline</div>
-  <h2 class="section-title reveal rd1">12 Hours. Zero Limits.</h2>
-  <p class="section-subtitle reveal rd2">Here's how the day unfolds — from kickoff to awards.</p>
-
-  <div class="timeline-wrap">
-    <div class="timeline-line"></div>
-    <div class="timeline-items" id="timelineItems">
-      <div class="titem left">
-        <div class="titem-content">
-          <div class="titem-time">08:00 AM</div>
-          <div class="titem-title">🚀 Registration & Kickoff</div>
-          <div class="titem-desc">Teams assemble. Problem statements are revealed. The countdown begins.</div>
-        </div>
-        <div class="titem-dot">🔥</div>
-        <div class="titem-empty"></div>
-      </div>
-      <div class="titem right">
-        <div class="titem-empty"></div>
-        <div class="titem-dot">💡</div>
-        <div class="titem-content">
-          <div class="titem-time">09:00 AM</div>
-          <div class="titem-title">💡 Hacking Begins</div>
-          <div class="titem-desc">12 hours of pure building. Your code, your rules, your vision.</div>
-        </div>
-      </div>
-      <div class="titem left">
-        <div class="titem-content">
-          <div class="titem-time">01:00 PM</div>
-          <div class="titem-title">🍕 Fuel Up — Lunch Break</div>
-          <div class="titem-desc">Recharge with free food. Mentors available for guidance sessions.</div>
-        </div>
-        <div class="titem-dot">🍕</div>
-        <div class="titem-empty"></div>
-      </div>
-      <div class="titem right">
-        <div class="titem-empty"></div>
-        <div class="titem-dot">☕</div>
-        <div class="titem-content">
-          <div class="titem-time">06:00 PM</div>
-          <div class="titem-title">☕ Midnight Oil</div>
-          <div class="titem-desc">Energy drinks, snacks, and a surge of creativity as deadlines approach.</div>
-        </div>
-      </div>
-      <div class="titem left">
-        <div class="titem-content">
-          <div class="titem-time">08:30 PM</div>
-          <div class="titem-title">🛑 Submission Cutoff</div>
-          <div class="titem-desc">Push your final commit. Projects locked. Presentation prep begins.</div>
-        </div>
-        <div class="titem-dot">⏱️</div>
-        <div class="titem-empty"></div>
-      </div>
-      <div class="titem right">
-        <div class="titem-empty"></div>
-        <div class="titem-dot">🏆</div>
-        <div class="titem-content">
-          <div class="titem-time">09:00 PM</div>
-          <div class="titem-title">🏆 Awards & Closing</div>
-          <div class="titem-desc">Winners crowned. Glory earned. Memories made. See you at 4.0!</div>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -1058,10 +935,6 @@ class Spark {
   draw(){
     cx.beginPath(); cx.arc(this.x, this.y, this.sz, 0, Math.PI*2);
     cx.fillStyle = this.col; cx.globalAlpha = this.life*0.7; cx.fill();
-    if(this.sz>1.2){
-      cx.shadowBlur = 8; cx.shadowColor = this.col;
-      cx.fill(); cx.shadowBlur = 0;
-    }
   }
 }
 
@@ -1094,31 +967,15 @@ class MatrixDrop {
   }
 }
 
-const sparks = Array.from({length:120}, () => { const s=new Spark(); s.y=Math.random()*H; return s; });
-const drops = Array.from({length:Math.floor(W/22)}, () => new MatrixDrop());
-
-function drawConnections(){
-  for(let i=0;i<sparks.length;i++){
-    for(let j=i+1;j<sparks.length;j++){
-      const dx=sparks[i].x-sparks[j].x, dy=sparks[i].y-sparks[j].y;
-      const d=Math.sqrt(dx*dx+dy*dy);
-      if(d<110){
-        cx.beginPath(); cx.moveTo(sparks[i].x,sparks[i].y); cx.lineTo(sparks[j].x,sparks[j].y);
-        cx.strokeStyle='#ff6000'; cx.globalAlpha=(1-d/110)*0.06; cx.lineWidth=0.8; cx.stroke();
-      }
-    }
-  }
-}
+const sparks = Array.from({length:50}, () => { const s=new Spark(); s.y=Math.random()*H; return s; });
+const drops = Array.from({length:Math.min(30, Math.floor(W/40))}, () => new MatrixDrop());
 
 function anim(){
   cx.clearRect(0,0,W,H);
-  // Matrix rain (very faint)
   drops.forEach(d => { d.update(); d.draw(); });
-  // Sparks
   cx.shadowBlur = 0;
   sparks.forEach(s => { s.update(); s.draw(); });
   cx.globalAlpha = 1;
-  drawConnections();
   requestAnimationFrame(anim);
 }
 anim();
@@ -1186,14 +1043,6 @@ const ro = new IntersectionObserver(es => es.forEach(e => {
   if(e.isIntersecting){ e.target.classList.add('visible'); ro.unobserve(e.target); }
 }), {threshold:.12});
 document.querySelectorAll('.reveal').forEach(r => ro.observe(r));
-
-// Timeline reveals
-const tro = new IntersectionObserver(es => es.forEach(e => {
-  if(e.isIntersecting){ e.target.classList.add('visible'); tro.unobserve(e.target); }
-}), {threshold:.2});
-document.querySelectorAll('.titem').forEach((t,i) => {
-  t.style.transitionDelay = `${i*0.1}s`; tro.observe(t);
-});
 
 // ═══════════════════════════════════════════
 // COUNTER ANIMATIONS
