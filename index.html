@@ -250,7 +250,7 @@ footer{position:relative;z-index:5;padding:36px 64px;border-top:1px solid var(--
     <div class="hero-eyebrow"><span class="live-dot"></span> Applications Open · 2026</div>
     <h1 class="hero-title">
       <span class="line-main" id="heroTitle">TECH BLAZE</span>
-      <span class="line-fire">State Level Hackathon.</span>
+      <span class="line-fire">Hackathon.</span>
     </h1>
     <p class="hero-version">// Version 3.0 · 12-Hour Hackathon</p>
     <p class="hero-subtitle">The Department of Computer Engineering presents its most explosive hackathon yet.<br>Build fast. Think bold. <span style="color:var(--fire2)">Win glory.</span></p>
@@ -275,7 +275,7 @@ footer{position:relative;z-index:5;padding:36px 64px;border-top:1px solid var(--
     </div>
     <div class="hero-card-main">
       <div class="hcm-tag">⚡ Main Event</div>
-      <div class="hcm-title">State Level Hackathon</div>
+      <div class="hcm-title">Tech Blaze 3.0</div>
       <div class="hcm-sub">Department of Computer Engineering · 2026</div>
       <div class="hcm-stats">
         <div class="hcm-stat"><div class="hcm-stat-num"><span id="cn1">0</span><sub>hrs</sub></div><div class="hcm-stat-lbl">Non-Stop</div></div>
@@ -344,13 +344,12 @@ footer{position:relative;z-index:5;padding:36px 64px;border-top:1px solid var(--
 
 <section class="section" id="events">
   <div class="section-label reveal">Event Details</div>
-  <h2 class="section-title reveal rd1">Event Details</h2>
+  <h2 class="section-title reveal rd1">Tech Blaze 3.0</h2>
   <p class="section-subtitle reveal rd2">The ultimate platform to showcase your skills, creativity, and problem-solving abilities.</p>
   <div class="events-grid single-event reveal rd3">
     <div class="event-card featured">
       <div class="ec-number">12-Hour Challenge</div>
       <h3 class="ec-title">Tech Blaze 3.0</h3>
-      <h2>State Level Hackathon</h2>
       <p class="ec-desc">Push your limits in this non-stop hackathon where teams of up to 4 build real solutions to real-world problems. Mentors, resources, and unlimited caffeine included.</p>
       <div class="ec-details">
         <div class="ec-detail"><div class="ec-detail-icon">👥</div>Teams of 1–4 participants</div>
@@ -409,38 +408,90 @@ if(isMouse){
   });
 }
 
-// ── CANVAS — paused during scroll, stopped off-screen ──
+// ── CANVAS — particle network (Nexora-style) ──
 const cv=document.getElementById('mainCanvas');
 const cx=cv.getContext('2d');
 let W=0,H=0;
-function rsz(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;}
-rsz();
-window.addEventListener('resize',rsz,{passive:true});
-
-const COLS=['#ff4500','#ff6a00','#ff8c00','#ffb300'];
-function mkSpark(init){
-  return{x:Math.random()*W,y:init?Math.random()*H:H+8,vx:(Math.random()-.5)*.6,vy:-(Math.random()*1.1+.3),r:Math.random()*1.8+.4,life:1,decay:Math.random()*.006+.003,col:COLS[Math.floor(Math.random()*COLS.length)]};
+function rsz(){
+  W=cv.width=window.innerWidth;
+  H=cv.height=window.innerHeight;
+  // rebuild particles on resize so they fill new dimensions
+  particles.length=0;
+  const count=Math.min(80,Math.floor((W*H)/14000));
+  for(let i=0;i<count;i++) particles.push(mkParticle());
 }
-const sparks=Array.from({length:35},()=>mkSpark(true));
+
+function mkParticle(){
+  return{
+    x:Math.random()*W, y:Math.random()*H,
+    vx:(Math.random()-.5)*.4, vy:(Math.random()-.5)*.4,
+    r:Math.random()*1.6+.8,
+    // fire-toned colours for consistency with site theme
+    col: Math.random()<.6 ? 'rgba(255,140,0,' : Math.random()<.5 ? 'rgba(255,69,0,' : 'rgba(255,215,0,'
+  };
+}
+
+const particles=[];
+// initial population after W/H are set
+window.addEventListener('resize',rsz,{passive:true});
+rsz(); // sets W,H and fills particles
+
+const CONNECT_DIST=130; // max px to draw a line
 
 let isScrolling=false,scrollTmo;
-window.addEventListener('scroll',()=>{isScrolling=true;clearTimeout(scrollTmo);scrollTmo=setTimeout(()=>isScrolling=false,100);},{passive:true});
+window.addEventListener('scroll',()=>{isScrolling=true;clearTimeout(scrollTmo);scrollTmo=setTimeout(()=>isScrolling=false,120);},{passive:true});
 
-// Only draw canvas when hero section is visible
 let heroVisible=true;
 const heroObs=new IntersectionObserver(es=>heroVisible=es[0].isIntersecting,{threshold:0});
 heroObs.observe(document.getElementById('hero'));
+
+// mouse position for interactive pull
+let mx=-9999,my=-9999;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;},{passive:true});
 
 function loop(){
   requestAnimationFrame(loop);
   if(isScrolling||!heroVisible){cx.clearRect(0,0,W,H);return;}
   cx.clearRect(0,0,W,H);
-  for(let i=0;i<sparks.length;i++){
-    const s=sparks[i];
-    s.x+=s.vx;s.y+=s.vy;s.vx+=(Math.random()-.5)*.04;s.life-=s.decay;
-    if(s.life<=0||s.y<-8){sparks[i]=mkSpark(false);continue;}
-    cx.beginPath();cx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    cx.fillStyle=s.col;cx.globalAlpha=s.life*.6;cx.fill();
+
+  // update + draw dots
+  for(let i=0;i<particles.length;i++){
+    const p=particles[i];
+
+    // subtle mouse attraction
+    const mdx=mx-p.x, mdy=my-p.y;
+    const md=Math.sqrt(mdx*mdx+mdy*mdy);
+    if(md<160){p.vx+=mdx/md*.012;p.vy+=mdy/md*.012;}
+
+    // speed cap
+    const sp=Math.sqrt(p.vx*p.vx+p.vy*p.vy);
+    if(sp>.7){p.vx=p.vx/sp*.7;p.vy=p.vy/sp*.7;}
+
+    p.x+=p.vx; p.y+=p.vy;
+    // bounce off edges
+    if(p.x<0){p.x=0;p.vx*=-1;} if(p.x>W){p.x=W;p.vx*=-1;}
+    if(p.y<0){p.y=0;p.vy*=-1;} if(p.y>H){p.y=H;p.vy*=-1;}
+
+    cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    cx.fillStyle=p.col+'0.7)';cx.fill();
+  }
+
+  // draw connections — only between nearby pairs
+  for(let i=0;i<particles.length;i++){
+    for(let j=i+1;j<particles.length;j++){
+      const dx=particles[i].x-particles[j].x;
+      const dy=particles[i].y-particles[j].y;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      if(d<CONNECT_DIST){
+        const alpha=(1-d/CONNECT_DIST)*0.18;
+        cx.beginPath();
+        cx.moveTo(particles[i].x,particles[i].y);
+        cx.lineTo(particles[j].x,particles[j].y);
+        cx.strokeStyle=`rgba(255,120,0,${alpha})`;
+        cx.lineWidth=.7;
+        cx.stroke();
+      }
+    }
   }
   cx.globalAlpha=1;
 }
@@ -510,8 +561,3 @@ const mTrack=document.getElementById('marquee');
 </script>
 </body>
 </html>
-
-
-
-
-
