@@ -71,6 +71,48 @@
     .p-leader { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.25); color: #63b3ed; border-radius: 4px; font-size: 10px; padding: 2px 8px; }
     .p-required { background: rgba(239,83,80,0.12); border: 1px solid rgba(239,83,80,0.2); color: #ef5350; border-radius: 4px; font-size: 10px; padding: 2px 8px; }
     .p-optional  { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); border-radius: 4px; font-size: 10px; padding: 2px 8px; }
+
+    /* ── BACK TO HOME BUTTON ── */
+    .back-home-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      text-decoration: none;
+      padding: 8px 14px 8px 10px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(8px);
+      transition: all .22s ease;
+      margin-bottom: 28px;
+      align-self: flex-start;
+    }
+    .back-home-btn:hover {
+      color: #63b3ed;
+      border-color: rgba(99,179,237,0.35);
+      background: rgba(99,179,237,0.07);
+      transform: translateX(-2px);
+    }
+    .back-home-btn svg {
+      width: 14px; height: 14px;
+      stroke: currentColor;
+      transition: transform .22s ease;
+      flex-shrink: 0;
+    }
+    .back-home-btn:hover svg {
+      transform: translateX(-2px);
+    }
+    /* Wrap the main content so the button sits above the header */
+    .reg-main-inner {
+      display: flex;
+      flex-direction: column;
+    }
   </style>
 </head>
 <body>
@@ -104,212 +146,224 @@
 
     <!-- Main -->
     <main class="reg-main">
-      <div class="reg-main-header fade-up fade-up-1">
-        <h2 class="reg-main-title">Team Registration</h2>
-        <p class="reg-main-sub">Fields marked with <span class="asterisk">*</span> are required</p>
-      </div>
+      <div class="reg-main-inner">
 
-      <form id="hackForm" class="fade-up fade-up-2" novalidate>
+        <!-- ── BACK TO HOME ── -->
+        <a href="index.html" class="back-home-btn fade-up fade-up-1" aria-label="Back to home">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M5 12l7-7M5 12l7 7"/>
+          </svg>
+          Back to Home
+        </a>
 
-        <!-- STEP 1 -->
-        <div class="form-section" id="fs1">
-          <div class="form-section-title">Step 1 — Team Details</div>
-          <div class="form-row">
+        <div class="reg-main-header fade-up fade-up-1">
+          <h2 class="reg-main-title">Team Registration</h2>
+          <p class="reg-main-sub">Fields marked with <span class="asterisk">*</span> are required</p>
+        </div>
+
+        <form id="hackForm" class="fade-up fade-up-2" novalidate>
+
+          <!-- STEP 1 -->
+          <div class="form-section" id="fs1">
+            <div class="form-section-title">Step 1 — Team Details</div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label>Team Name *</label>
+                <input id="team" name="team" type="text" placeholder="e.g. ByteForce, NullPointers, CodeNinjas…" required autocomplete="off">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>College / Institution *</label>
+                <input id="college" name="college" type="text" placeholder="Your college name" required autocomplete="off">
+              </div>
+              <div class="form-group">
+                <label>Team Size *</label>
+                <div class="size-pills">
+                  <div class="sz-pill" data-n="1" onclick="setSize(1)">1</div>
+                  <div class="sz-pill" data-n="2" onclick="setSize(2)">2</div>
+                  <div class="sz-pill" data-n="3" onclick="setSize(3)">3</div>
+                  <div class="sz-pill" data-n="4" onclick="setSize(4)">4</div>
+                </div>
+                <select id="team_size" name="team_size" required>
+                  <option value="">Select</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="form-section" id="fs2">
+            <div class="form-section-title">Step 2 — Team Members</div>
+
+            <!-- Member progress bar -->
+            <div class="member-dots">
+              <div class="mdot on" id="md1"></div>
+              <div class="mdot" id="md2"></div>
+              <div class="mdot" id="md3"></div>
+              <div class="mdot" id="md4"></div>
+            </div>
+
+            <!-- P1 — always visible -->
+            <div class="participant-card required-member">
+              <div class="participant-label">
+                <div class="p-num">1</div>
+                Team Leader
+                <span class="p-leader">Leader</span>
+                <span class="p-required">Required</span>
+              </div>
+              <div class="form-row">
+                <div class="form-group full">
+                  <label>Full Name *</label>
+                  <input name="p1" type="text" placeholder="Full name" required autocomplete="off">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Mobile Number *</label>
+                  <input name="p1_phone" type="tel" placeholder="10-digit (starts 6–9)" pattern="[6-9]\d{9}" required maxlength="10" inputmode="numeric">
+                </div>
+                <div class="form-group">
+                  <label>Email Address *</label>
+                  <input name="p1_email" type="email" placeholder="leader@email.com" required autocomplete="off">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Food Preference *</label>
+                  <select name="p1_food" required>
+                    <option value="">Select option</option>
+                    <option value="Vegetarian">🥦 Vegetarian</option>
+                    <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- P2 -->
+            <div class="participant-card optional-member" id="p2c">
+              <div class="participant-label">
+                <div class="p-num">2</div>
+                Member 2
+                <span class="p-optional">Optional</span>
+              </div>
+              <div class="form-row">
+                <div class="form-group full">
+                  <label>Full Name</label>
+                  <input name="p2" type="text" placeholder="Full name" autocomplete="off">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Mobile Number</label>
+                  <input name="p2_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10" inputmode="numeric">
+                </div>
+                <div class="form-group">
+                  <label>Email Address</label>
+                  <input name="p2_email" type="email" placeholder="member2@email.com" autocomplete="off">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Food Preference</label>
+                  <select name="p2_food">
+                    <option value="">Select option</option>
+                    <option value="Vegetarian">🥦 Vegetarian</option>
+                    <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- P3 -->
+            <div class="participant-card optional-member" id="p3c">
+              <div class="participant-label">
+                <div class="p-num">3</div>
+                Member 3
+                <span class="p-optional">Optional</span>
+              </div>
+              <div class="form-row">
+                <div class="form-group full">
+                  <label>Full Name</label>
+                  <input name="p3" type="text" placeholder="Full name" autocomplete="off">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Mobile Number</label>
+                  <input name="p3_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10" inputmode="numeric">
+                </div>
+                <div class="form-group">
+                  <label>Email Address</label>
+                  <input name="p3_email" type="email" placeholder="member3@email.com" autocomplete="off">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Food Preference</label>
+                  <select name="p3_food">
+                    <option value="">Select option</option>
+                    <option value="Vegetarian">🥦 Vegetarian</option>
+                    <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- P4 -->
+            <div class="participant-card optional-member" id="p4c">
+              <div class="participant-label">
+                <div class="p-num">4</div>
+                Member 4
+                <span class="p-optional">Optional</span>
+              </div>
+              <div class="form-row">
+                <div class="form-group full">
+                  <label>Full Name</label>
+                  <input name="p4" type="text" placeholder="Full name" autocomplete="off">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Mobile Number</label>
+                  <input name="p4_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10" inputmode="numeric">
+                </div>
+                <div class="form-group">
+                  <label>Email Address</label>
+                  <input name="p4_email" type="email" placeholder="member4@email.com" autocomplete="off">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Food Preference</label>
+                  <select name="p4_food">
+                    <option value="">Select option</option>
+                    <option value="Vegetarian">🥦 Vegetarian</option>
+                    <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div class="form-section" id="fs3">
+            <div class="form-section-title">Step 3 — Health & Accessibility</div>
             <div class="form-group full">
-              <label>Team Name *</label>
-              <input id="team" name="team" type="text" placeholder="e.g. ByteForce, NullPointers, CodeNinjas…" required autocomplete="off">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>College / Institution *</label>
-              <input id="college" name="college" type="text" placeholder="Your college name" required autocomplete="off">
-            </div>
-            <div class="form-group">
-              <label>Team Size *</label>
-              <div class="size-pills">
-                <div class="sz-pill" data-n="1" onclick="setSize(1)">1</div>
-                <div class="sz-pill" data-n="2" onclick="setSize(2)">2</div>
-                <div class="sz-pill" data-n="3" onclick="setSize(3)">3</div>
-                <div class="sz-pill" data-n="4" onclick="setSize(4)">4</div>
-              </div>
-              <select id="team_size" name="team_size" required>
-                <option value="">Select</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- STEP 2 -->
-        <div class="form-section" id="fs2">
-          <div class="form-section-title">Step 2 — Team Members</div>
-
-          <!-- Member progress bar -->
-          <div class="member-dots">
-            <div class="mdot on" id="md1"></div>
-            <div class="mdot" id="md2"></div>
-            <div class="mdot" id="md3"></div>
-            <div class="mdot" id="md4"></div>
-          </div>
-
-          <!-- P1 — always visible -->
-          <div class="participant-card required-member">
-            <div class="participant-label">
-              <div class="p-num">1</div>
-              Team Leader
-              <span class="p-leader">Leader</span>
-              <span class="p-required">Required</span>
-            </div>
-            <div class="form-row">
-              <div class="form-group full">
-                <label>Full Name *</label>
-                <input name="p1" type="text" placeholder="Full name" required autocomplete="off">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Mobile Number *</label>
-                <input name="p1_phone" type="tel" placeholder="10-digit (starts 6–9)" pattern="[6-9]\d{9}" required maxlength="10" inputmode="numeric">
-              </div>
-              <div class="form-group">
-                <label>Email Address *</label>
-                <input name="p1_email" type="email" placeholder="leader@email.com" required autocomplete="off">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Food Preference *</label>
-                <select name="p1_food" required>
-                  <option value="">Select option</option>
-                  <option value="Vegetarian">🥦 Vegetarian</option>
-                  <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
-                </select>
-              </div>
+              <label for="medical">Medical Conditions or Accessibility Needs</label>
+              <textarea id="medical" name="medical" rows="4" placeholder="Let us know if any team member has allergies, medical conditions, or accessibility requirements…"></textarea>
             </div>
           </div>
 
-          <!-- P2 — hidden until size >= 2 -->
-          <div class="participant-card optional-member" id="p2c">
-            <div class="participant-label">
-              <div class="p-num">2</div>
-              Member 2
-              <span class="p-optional">Optional</span>
-            </div>
-            <div class="form-row">
-              <div class="form-group full">
-                <label>Full Name</label>
-                <input name="p2" type="text" placeholder="Full name" autocomplete="off">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Mobile Number</label>
-                <input name="p2_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10" inputmode="numeric">
-              </div>
-              <div class="form-group">
-                <label>Email Address</label>
-                <input name="p2_email" type="email" placeholder="member2@email.com" autocomplete="off">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Food Preference</label>
-                <select name="p2_food">
-                  <option value="">Select option</option>
-                  <option value="Vegetarian">🥦 Vegetarian</option>
-                  <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
-                </select>
-              </div>
-            </div>
-          </div>
+          <button type="submit" class="btn-submit" id="submitBtn">Submit Registration →</button>
+          <p class="form-note">By submitting, you agree to the event terms & code of conduct.</p>
+        </form>
 
-          <!-- P3 — hidden until size >= 3 -->
-          <div class="participant-card optional-member" id="p3c">
-            <div class="participant-label">
-              <div class="p-num">3</div>
-              Member 3
-              <span class="p-optional">Optional</span>
-            </div>
-            <div class="form-row">
-              <div class="form-group full">
-                <label>Full Name</label>
-                <input name="p3" type="text" placeholder="Full name" autocomplete="off">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Mobile Number</label>
-                <input name="p3_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10" inputmode="numeric">
-              </div>
-              <div class="form-group">
-                <label>Email Address</label>
-                <input name="p3_email" type="email" placeholder="member3@email.com" autocomplete="off">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Food Preference</label>
-                <select name="p3_food">
-                  <option value="">Select option</option>
-                  <option value="Vegetarian">🥦 Vegetarian</option>
-                  <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- P4 — hidden until size = 4 -->
-          <div class="participant-card optional-member" id="p4c">
-            <div class="participant-label">
-              <div class="p-num">4</div>
-              Member 4
-              <span class="p-optional">Optional</span>
-            </div>
-            <div class="form-row">
-              <div class="form-group full">
-                <label>Full Name</label>
-                <input name="p4" type="text" placeholder="Full name" autocomplete="off">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Mobile Number</label>
-                <input name="p4_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10" inputmode="numeric">
-              </div>
-              <div class="form-group">
-                <label>Email Address</label>
-                <input name="p4_email" type="email" placeholder="member4@email.com" autocomplete="off">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Food Preference</label>
-                <select name="p4_food">
-                  <option value="">Select option</option>
-                  <option value="Vegetarian">🥦 Vegetarian</option>
-                  <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- STEP 3 -->
-        <div class="form-section" id="fs3">
-          <div class="form-section-title">Step 3 — Health & Accessibility</div>
-          <div class="form-group full">
-            <label for="medical">Medical Conditions or Accessibility Needs</label>
-            <textarea id="medical" name="medical" rows="4" placeholder="Let us know if any team member has allergies, medical conditions, or accessibility requirements…"></textarea>
-          </div>
-        </div>
-
-        <button type="submit" class="btn-submit" id="submitBtn">Submit Registration →</button>
-        <p class="form-note">By submitting, you agree to the event terms & code of conduct.</p>
-      </form>
+      </div><!-- /.reg-main-inner -->
     </main>
   </div>
 
@@ -322,17 +376,10 @@
 
     function setSize(n) {
       currentSize = n;
-
-      // Update hidden select
       document.getElementById('team_size').value = n;
-
-      // Update pill styles
       document.querySelectorAll('.sz-pill').forEach(p => {
         p.classList.toggle('active', parseInt(p.dataset.n) === n);
       });
-
-      // Show/hide member cards
-      // p2c shows when n >= 2, p3c when n >= 3, p4c when n == 4
       const cards = { p2c: 2, p3c: 3, p4c: 4 };
       Object.entries(cards).forEach(([id, minSize]) => {
         const card = document.getElementById(id);
@@ -340,12 +387,9 @@
           card.classList.add('show');
         } else {
           card.classList.remove('show');
-          // Clear fields of hidden cards
           card.querySelectorAll('input, select').forEach(f => f.value = '');
         }
       });
-
-      // Update progress dots
       for (let i = 1; i <= 4; i++) {
         const d = document.getElementById('md' + i);
         if (d) d.classList.toggle('on', i <= n);
@@ -410,7 +454,6 @@
       if (!validEmail(val('p1_email'))) { toast('Team Leader: Enter a valid email address'); return; }
       if (!val('p1_food')) { toast('Team Leader: Please select food preference'); return; }
 
-      // Validate each visible extra member
       for (let i = 2; i <= currentSize; i++) {
         const name = val(`p${i}`);
         if (!name) { toast(`Member ${i}: Please enter full name`); return; }
