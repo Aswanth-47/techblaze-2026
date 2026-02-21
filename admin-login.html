@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login — Tech Blaze 3.0</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .login-page { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 20px; position:relative; z-index:5; }
+    .login-card { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:40px 36px; width:100%; max-width:400px; backdrop-filter:blur(20px); }
+    .login-logo { width:48px; height:48px; background:linear-gradient(135deg,#6c63ff,#a78bfa); border-radius:12px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:18px; color:#fff; margin:0 auto 20px; }
+    .login-title { text-align:center; font-size:22px; font-weight:700; color:#fff; margin-bottom:4px; }
+    .login-sub { text-align:center; font-size:13px; color:rgba(255,255,255,0.4); margin-bottom:28px; }
+    .login-field { margin-bottom:16px; }
+    .login-field label { display:block; font-size:12px; font-weight:600; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:6px; }
+    .login-field input { width:100%; padding:12px 14px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:10px; color:#fff; font-size:15px; font-family:'DM Sans',sans-serif; box-sizing:border-box; outline:none; transition:border-color .2s; }
+    .login-field input:focus { border-color:#6c63ff; }
+    .login-btn { width:100%; padding:13px; background:linear-gradient(135deg,#6c63ff,#a78bfa); color:#fff; font-size:15px; font-weight:600; border:none; border-radius:10px; cursor:pointer; margin-top:8px; font-family:'DM Sans',sans-serif; transition:opacity .2s,transform .15s; }
+    .login-btn:hover { opacity:.9; transform:translateY(-1px); }
+    .login-btn:disabled { opacity:.6; cursor:not-allowed; transform:none; }
+    .login-error { background:rgba(239,83,80,0.15); border:1px solid rgba(239,83,80,0.3); color:#ef5350; border-radius:10px; padding:10px 14px; font-size:13px; margin-bottom:16px; text-align:center; display:none; }
+  </style>
+</head>
+<body>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <div class="login-page">
+    <div class="login-card fade-up fade-up-1">
+      <div class="login-logo">CE</div>
+      <div class="login-title">Admin Panel</div>
+      <div class="login-sub">Tech Blaze 3.0 — Organiser Access</div>
+
+      <div class="login-error" id="loginError">⚠️ Invalid username or password.</div>
+
+      <div class="login-field">
+        <label>Username</label>
+        <input type="text" id="username" placeholder="Enter username" autofocus>
+      </div>
+      <div class="login-field">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Enter password">
+      </div>
+      <button class="login-btn" id="loginBtn" onclick="doLogin()">Login to Admin Panel →</button>
+    </div>
+  </div>
+
+  <script>
+    // If already logged in, redirect
+    if (sessionStorage.getItem('admin_token')) window.location.href = 'admin.html';
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+    async function doLogin() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const btn = document.getElementById('loginBtn');
+      const errDiv = document.getElementById('loginError');
+
+      if (!username || !password) { errDiv.style.display = 'block'; errDiv.textContent = '⚠️ Please enter username and password.'; return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Logging in…';
+      errDiv.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/admin-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+
+        if (data.success && data.token) {
+          sessionStorage.setItem('admin_token', data.token);
+          window.location.href = 'admin.html';
+        } else {
+          errDiv.style.display = 'block';
+          errDiv.textContent = '⚠️ Invalid username or password.';
+          btn.disabled = false;
+          btn.textContent = 'Login to Admin Panel →';
+        }
+      } catch {
+        errDiv.style.display = 'block';
+        errDiv.textContent = '❌ Network error. Please try again.';
+        btn.disabled = false;
+        btn.textContent = 'Login to Admin Panel →';
+      }
+    }
+  </script>
+</body>
+</html>

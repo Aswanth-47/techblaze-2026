@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dept. of Computer Engineering — Tech Blaze 3.0</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- Navigation -->
+  <header class="site-header">
+    <nav class="nav">
+      <a href="index.html" class="nav-brand">
+        <div class="nav-logo">CT</div>
+        <span class="nav-name">Computer Engineering</span>
+      </a>
+      <ul class="nav-links">
+        <li><button class="nav-link-btn" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">About</button></li>
+        <li><button class="nav-link-btn" onclick="document.getElementById('events').scrollIntoView({behavior:'smooth'})">Event Details</button></li>
+        <li><a href="register.html" class="btn-nav">Register Now →</a></li>
+      </ul>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-content">
+        <div class="hero-eyebrow fade-up fade-up-1">
+          <span class="dot"></span>
+          Applications Open · 2026
+        </div>
+        <h1 class="hero-title fade-up fade-up-2">
+          Build. Create.<br>
+          <span class="highlight">Innovate.</span>
+        </h1>
+        <p class="hero-subtitle fade-up fade-up-3">
+          Join Tech Blaze 3.0 — A 12-hour hackathon from the Department of 
+          Computer Engineering. Bring your best ideas and compete for glory.
+        </p>
+        <div class="hero-actions fade-up fade-up-3">
+          <a href="register.html" class="btn-primary">Register Your Team →</a>
+          <button class="btn-secondary" onclick="document.getElementById('events').scrollIntoView({behavior:'smooth'})">Learn More</button>
+        </div>
+      </div>
+
+    <!-- Hero Visual -->
+    <div class="hero-visual">
+      <div class="event-cards-stack">
+        <div class="event-card-preview ecp-1">
+          <div class="ecp-icon">⚡</div>
+          <div class="ecp-badge badge-blue">Hackathon</div>
+          <div class="ecp-title">Tech Blaze 3.0</div>
+          <div class="ecp-meta">⏰ 12-Hour Challenge · Teams of 4</div>
+        </div>
+
+        <!-- Prize Pool Card -->
+        <div class="prize-pool-card">
+          <div class="prize-label">PRIZE POOL</div>
+          <div class="prize-display">
+            <span class="prize-currency">₹</span>
+            <span class="prize-value">10K</span>
+          </div>
+          <div class="prize-description">To Be Won</div>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-number">12<span class="stat-unit">hrs</span></div>
+          <div class="stat-label">Non-Stop Coding</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">4<span class="stat-unit">max</span></div>
+          <div class="stat-label">Team Members</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">₹250<span class="stat-unit">/person</span></div>
+          <div class="stat-label">Registration</div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- About Section -->
+  <section class="section" id="about">
+    <div class="section-label">About</div>
+    <h2 class="section-title">Where Engineering Meets Innovation</h2>
+    <p class="section-subtitle">
+      The Department of Computer Engineering proudly presents Tech Blaze 3.0, 
+      an epic 12-hour hackathon bringing together brilliant minds to create, collaborate, and innovate.
+    </p>
+
+    <!-- Event Quick Details Grid -->
+    <div class="event-details-grid">
+      <div class="event-detail-card">
+        <div class="detail-icon">⚡</div>
+        <div class="detail-content">
+          <div class="detail-label">Duration</div>
+          <div class="detail-value">12 Hours Non-Stop</div>
+        </div>
+      </div>
+
+      <div class="event-detail-card">
+        <div class="detail-icon">👥</div>
+        <div class="detail-content">
+          <div class="detail-label">Team Size</div>
+          <div class="detail-value">1-4 Members</div>
+        </div>
+      </div>
+
+      <div class="event-detail-card">
+        <div class="detail-icon">💰</div>
+        <div class="detail-content">
+          <div class="detail-label">Registration Fee</div>
+          <div class="detail-value">₹250 / Person</div>
+        </div>
+      </div>
+
+      <div class="event-detail-card">
+        <div class="detail-icon">🏆</div>
+        <div class="detail-content">
+          <div class="detail-label">Prizes & Recognition</div>
+          <div class="detail-value">Cash + Certificates</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Event Tagline -->
+    <div class="event-tagline">
+      <h3>Innovate. Code. Transform.</h3>
+      <p>Build solutions that matter. Compete for glory. Network with the best.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Why Participate Section -->
+  <section class="section" id="why-participate">
+    <div class="section-label">Why Participate</div>
+    <h2 class="section-title">Why Tech Blaze 3.0?</h2>
+    
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">🎯</div>
+        <h4>Real-World Problems</h4>
+        <p>Work on challenges that matter. Build solutions with real-world applications and impact.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">🧠</div>
+        <h4>Learn & Grow</h4>
+        <p>Learn from experienced mentors and industry professionals. Expand your technical skills.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">🤝</div>
+        <h4>Network with Peers</h4>
+        <p>Connect with passionate developers, designers, and innovators from across the region.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">🏅</div>
+        <h4>Win Big</h4>
+        <p>Compete for impressive cash prizes, certificates, and recognition for your innovations.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">⚙️</div>
+        <h4>Tech Stack Freedom</h4>
+        <p>Use any technology, framework, or language. Complete freedom to build your way.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon">🎉</div>
+        <h4>Amazing Vibes</h4>
+        <p>Experience an energetic atmosphere with free food, swag, and unlimited caffeine.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Events Section -->
+  <section class="section" id="events">
+    <div class="section-label">Event Details</div>
+    <h2 class="section-title">Tech Blaze 3.0 Hackathon</h2>
+    <p class="section-subtitle">
+      The ultimate platform to showcase your coding skills, creativity, and problem-solving abilities. 
+      Code non-stop for 12 hours and win amazing prizes.
+    </p>
+
+    <div class="events-grid single-event">
+      <div class="event-card featured">
+        <div class="ec-number">12-Hour Challenge</div>
+        <span class="ec-icon">⚡</span>
+        <h3 class="ec-title">Tech Blaze 3.0</h3>
+        <p class="ec-desc">
+          Push your limits in this non-stop hackathon where teams of up to 4 build real solutions 
+          to real-world problems. Mentors, resources, and unlimited caffeine included. Show us what you've got.
+        </p>
+        <div class="ec-details">
+          <div class="ec-detail">
+            <div class="ec-detail-icon">👥</div>
+            <span>Teams of 1–4 participants</span>
+          </div>
+          <div class="ec-detail">
+            <div class="ec-detail-icon">⏱️</div>
+            <span>12 continuous hours</span>
+          </div>
+          <div class="ec-detail">
+            <div class="ec-detail-icon">🏆</div>
+            <span>Cash prizes & recognition</span>
+          </div>
+          <div class="ec-detail">
+            <div class="ec-detail-icon">🍕</div>
+            <span>Meals & refreshments provided</span>
+          </div>
+        </div>
+
+        <div class="event-highlights">
+          <h4>What to Expect</h4>
+          <ul>
+            <li>✨ Expert mentors and industry professionals</li>
+            <li>💡 Exciting problem statements & themes</li>
+            <li>🎁 Multiple prize categories</li>
+            <li>🤝 Networking with fellow developers</li>
+            <li>📊 Live judging and feedback</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Department of Computer Engineering. All rights reserved.</p>
+    <p></p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

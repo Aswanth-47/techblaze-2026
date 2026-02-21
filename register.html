@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register — Tech Blaze 3.0 Hackathon</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <div class="reg-page">
+
+    <!-- Sidebar -->
+    <aside class="reg-sidebar">
+      <div>
+        <div class="reg-sidebar-logo">
+          <div class="sidebar-logo-box">CE</div>
+          <span class="sidebar-brand-name">Computer Engineering</span>
+        </div>
+
+        <h1 class="reg-sidebar-title">
+          Tech Blaze<br><span class="grad">3.0</span>
+        </h1>
+        <p class="reg-sidebar-sub">
+          Register your team and secure your spot at the biggest hackathon of the year.
+          Teams of up to 4 members welcome. All team members must provide their details.
+        </p>
+
+        <div class="reg-steps">
+          <div class="reg-step active">
+            <div class="step-num">1</div>
+            Team Information
+          </div>
+          <div class="reg-step">
+            <div class="step-num">2</div>
+            Team Members
+          </div>
+          <div class="reg-step">
+            <div class="step-num">3</div>
+            Health & Preferences
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-footer">
+        <p>Questions? Reach out to the organising team.</p>
+        <p style="margin-top:4px;">© 2026 CE Department</p>
+      </div>
+    </aside>
+
+    <!-- Main Form Area -->
+    <main class="reg-main">
+      <div class="reg-main-header fade-up fade-up-1">
+        <h2 class="reg-main-title">Team Registration</h2>
+        <p class="reg-main-sub">Fields marked with <span class="asterisk">*</span> are required</p>
+      </div>
+
+      <form id="hackForm" class="fade-up fade-up-2">
+
+        <!-- Step 1 -->
+        <div class="form-section">
+          <div class="form-section-title">Step 1: Team Details</div>
+          <div class="form-row">
+            <div class="form-group full">
+              <label for="team">Team Name *</label>
+              <input id="team" name="team" type="text" placeholder="e.g. ByteForce, NullPointers, CodeNinjas…" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="college">College / Institution *</label>
+              <input id="college" name="college" type="text" placeholder="Your college name" required>
+            </div>
+            <div class="form-group">
+              <label for="team_size">Team Size *</label>
+              <select id="team_size" name="team_size" required onchange="updateParticipantFields()">
+                <option value="">Select team size</option>
+                <option value="1">1 Member</option>
+                <option value="2">2 Members</option>
+                <option value="3">3 Members</option>
+                <option value="4">4 Members</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="form-section">
+          <div class="form-section-title">Step 2: Team Members</div>
+          <p class="section-info">⚠️ Please provide complete details for all team members</p>
+
+          <!-- P1 -->
+          <div class="participant-card required-member">
+            <div class="participant-label">
+              Team Member 1 — Team Leader
+              <span class="p-required">Required</span>
+            </div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label>Full Name *</label>
+                <input name="p1" type="text" placeholder="Full name" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Mobile Number *</label>
+                <input name="p1_phone" type="tel" placeholder="10-digit mobile (6-9 start)" pattern="[6-9]\d{9}" required maxlength="10">
+              </div>
+              <div class="form-group">
+                <label>Email Address *</label>
+                <input name="p1_email" type="email" placeholder="leader@email.com" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Food Preference *</label>
+                <select name="p1_food" required>
+                  <option value="">Select option</option>
+                  <option value="Vegetarian">🥦 Vegetarian</option>
+                  <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- P2 -->
+          <div class="participant-card optional-member" style="display:none;">
+            <div class="participant-label">Team Member 2<span class="p-optional">Optional</span></div>
+            <div class="form-row"><div class="form-group full"><label>Full Name</label><input name="p2" type="text" placeholder="Full name"></div></div>
+            <div class="form-row">
+              <div class="form-group"><label>Mobile Number</label><input name="p2_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10"></div>
+              <div class="form-group"><label>Email Address</label><input name="p2_email" type="email" placeholder="member2@email.com"></div>
+            </div>
+            <div class="form-row"><div class="form-group"><label>Food Preference</label><select name="p2_food"><option value="">Select option</option><option value="Vegetarian">🥦 Vegetarian</option><option value="Non-Vegetarian">🍗 Non-Vegetarian</option></select></div></div>
+          </div>
+
+          <!-- P3 -->
+          <div class="participant-card optional-member" style="display:none;">
+            <div class="participant-label">Team Member 3<span class="p-optional">Optional</span></div>
+            <div class="form-row"><div class="form-group full"><label>Full Name</label><input name="p3" type="text" placeholder="Full name"></div></div>
+            <div class="form-row">
+              <div class="form-group"><label>Mobile Number</label><input name="p3_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10"></div>
+              <div class="form-group"><label>Email Address</label><input name="p3_email" type="email" placeholder="member3@email.com"></div>
+            </div>
+            <div class="form-row"><div class="form-group"><label>Food Preference</label><select name="p3_food"><option value="">Select option</option><option value="Vegetarian">🥦 Vegetarian</option><option value="Non-Vegetarian">🍗 Non-Vegetarian</option></select></div></div>
+          </div>
+
+          <!-- P4 -->
+          <div class="participant-card optional-member" style="display:none;">
+            <div class="participant-label">Team Member 4<span class="p-optional">Optional</span></div>
+            <div class="form-row"><div class="form-group full"><label>Full Name</label><input name="p4" type="text" placeholder="Full name"></div></div>
+            <div class="form-row">
+              <div class="form-group"><label>Mobile Number</label><input name="p4_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10"></div>
+              <div class="form-group"><label>Email Address</label><input name="p4_email" type="email" placeholder="member4@email.com"></div>
+            </div>
+            <div class="form-row"><div class="form-group"><label>Food Preference</label><select name="p4_food"><option value="">Select option</option><option value="Vegetarian">🥦 Vegetarian</option><option value="Non-Vegetarian">🍗 Non-Vegetarian</option></select></div></div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="form-section">
+          <div class="form-section-title">Step 3: Health & Accessibility</div>
+          <div class="form-group full">
+            <label for="medical">Medical Conditions or Accessibility Needs</label>
+            <textarea id="medical" name="medical" placeholder="Let us know if any team member has allergies, medical conditions, or accessibility requirements…"></textarea>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">Submit Registration →</button>
+        <p class="form-note">By submitting, you agree to the event terms & code of conduct.</p>
+      </form>
+    </main>
+  </div>
+
+  <script>
+    // ─── SCROLL TOP ───
+    window.addEventListener('load', () => {
+      window.scrollTo(0, 0);
+      setTimeout(() => document.documentElement.classList.add('loaded'), 100);
+    });
+
+    // ─── PARTICIPANT FIELDS ───
+    function updateParticipantFields() {
+      const size = parseInt(document.getElementById('team_size').value) || 0;
+      document.querySelectorAll('.optional-member').forEach((m, i) => {
+        m.style.display = (i < size - 1) ? 'block' : 'none';
+        if (i >= size - 1) m.querySelectorAll('input,select').forEach(f => f.value = '');
+      });
+    }
+
+    // ─── PHONE VALIDATION ───
+    function validPhone(p) { return /^[6-9]\d{9}$/.test(p); }
+
+    // ─── TOAST ───
+    function showToast(msg, type = 'info') {
+      document.querySelector('.toast')?.remove();
+      const t = document.createElement('div');
+      t.className = 'toast';
+      t.textContent = msg;
+      const colors = { error: '#ef5350', success: '#66bb6a', info: '#29b6f6' };
+      t.style.cssText = `position:fixed;bottom:28px;right:28px;padding:16px 24px;background:${colors[type]};color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.5);z-index:9999;max-width:400px;animation:slideInToast .3s ease forwards;`;
+      document.head.insertAdjacentHTML('beforeend', '<style>@keyframes slideInToast{from{opacity:0;transform:translateY(10px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes slideOutToast{to{opacity:0;transform:translateY(10px) scale(.95)}}</style>');
+      document.body.appendChild(t);
+      setTimeout(() => { t.style.animation = 'slideOutToast .3s ease forwards'; setTimeout(() => t.remove(), 300); }, 4000);
+    }
+
+    // ─── FORM SUBMIT ───
+    document.getElementById('hackForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const get = name => document.querySelector(`[name="${name}"]`)?.value?.trim() || '';
+      const size = parseInt(get('team_size')) || 0;
+
+      if (!size) { showToast('Please select your team size', 'error'); return; }
+      if (!validPhone(get('p1_phone'))) { showToast('Team Leader: Enter a valid 10-digit number starting with 6-9', 'error'); return; }
+      if (!get('p1_food')) { showToast('Team Leader: Please select food preference', 'error'); return; }
+
+      for (let i = 2; i <= size; i++) {
+        const name = get(`p${i}`);
+        if (name) {
+          const phone = get(`p${i}_phone`);
+          const email = get(`p${i}_email`);
+          if (!phone) { showToast(`Member ${i}: Please enter mobile number`, 'error'); return; }
+          if (!validPhone(phone)) { showToast(`Member ${i}: Invalid phone number`, 'error'); return; }
+          if (!email || !email.includes('@')) { showToast(`Member ${i}: Please enter a valid email`, 'error'); return; }
+          if (!get(`p${i}_food`)) { showToast(`Member ${i}: Please select food preference`, 'error'); return; }
+        }
+      }
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Submitting…';
+
+      const payload = {};
+      ['team','college','team_size','medical',
+       'p1','p1_phone','p1_email','p1_food',
+       'p2','p2_phone','p2_email','p2_food',
+       'p3','p3_phone','p3_email','p3_food',
+       'p4','p4_phone','p4_email','p4_food'
+      ].forEach(k => payload[k] = get(k));
+
+      try {
+        const res = await fetch('/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          // Store data for success page
+          sessionStorage.setItem('reg_success', JSON.stringify(data));
+          window.location.href = 'success.html';
+        } else {
+          btn.disabled = false;
+          btn.textContent = 'Submit Registration →';
+          const msgs = {
+            duplicate: '⚠️ This phone number or email is already registered!',
+            invalid_phone: '⚠️ Invalid phone number! Must be 10 digits starting with 6-9.',
+            invalid_email: '⚠️ Invalid email address!',
+            missing_fields: '⚠️ Please fill all required fields.',
+            server_error: '❌ Server error. Please try again.',
+          };
+          showToast(msgs[data.error] || '❌ Something went wrong.', 'error');
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Submit Registration →';
+        showToast('❌ Network error. Please try again.', 'error');
+      }
+    });
+
+    // ─── STEP HIGHLIGHT ───
+    const sections = document.querySelectorAll('.form-section');
+    const steps = document.querySelectorAll('.reg-step');
+    if (sections.length && steps.length) {
+      new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const idx = [...sections].indexOf(entry.target);
+            steps.forEach(s => s.classList.remove('active'));
+            if (steps[idx]) steps[idx].classList.add('active');
+          }
+        });
+      }, { threshold: 0.5 }).observe;
+      sections.forEach(s => {
+        new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const idx = [...sections].indexOf(entry.target);
+              steps.forEach(s => s.classList.remove('active'));
+              if (steps[idx]) steps[idx].classList.add('active');
+            }
+          });
+        }, { threshold: 0.5 }).observe(s);
+      });
+    }
+
+    // ─── INPUT INTERACTIONS ───
+    document.querySelectorAll('input,textarea,select').forEach(el => {
+      el.addEventListener('focus', () => el.closest('.participant-card')?.classList.add('focused'));
+      el.addEventListener('blur', () => el.closest('.participant-card')?.classList.remove('focused'));
+      if (el.type === 'tel') {
+        el.addEventListener('input', e => {
+          let v = e.target.value.replace(/\D/g, '').slice(0, 10);
+          e.target.value = v;
+        });
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', updateParticipantFields);
+  </script>
+</body>
+</html>
