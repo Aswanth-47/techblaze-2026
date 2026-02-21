@@ -3,237 +3,493 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dept. of Computer Engineering — Tech Blaze 3.0</title>
+  <title>Tech Blaze 3.0 — Dept. of Computer Engineering</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;700&display=swap">
   <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --fire: #ff4500;
+      --fire2: #ff8c00;
+      --ember: #ffd700;
+      --dark: #0a0704;
+      --surface: #110e08;
+      --muted: #6b5a3e;
+      --text: #f0e6d3;
+      --border: rgba(255,140,0,0.12);
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* CURSOR */
+    .cursor-dot {
+      position: fixed; width: 8px; height: 8px;
+      background: var(--fire); border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: width .15s, height .15s, background .2s;
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      position: fixed; width: 32px; height: 32px;
+      border: 1.5px solid rgba(255,69,0,0.45);
+      border-radius: 50%; pointer-events: none; z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: width .3s, height .3s, border-color .3s;
+    }
+    .cursor-dot.hov { width: 16px; height: 16px; background: var(--ember); }
+    .cursor-ring.hov { width: 50px; height: 50px; border-color: rgba(255,140,0,.7); }
+
+    /* CANVAS */
+    #fc {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none; width: 100%; height: 100%; opacity: 0.55;
+    }
+
+    /* GRAIN */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9980; opacity: .5;
+    }
+
+    /* NAV */
+    .site-header { background: none; border: none; padding: 0; }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 64px;
+      border-bottom: 1px solid transparent;
+      transition: all .5s cubic-bezier(.25,.46,.45,.94);
+    }
+    nav.scrolled {
+      background: rgba(10,7,4,.9);
+      backdrop-filter: blur(28px);
+      border-bottom-color: var(--border);
+      padding: 14px 64px;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .nav-logo {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--fire), var(--fire2));
+      border-radius: 8px; display: grid; place-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 700; color: #fff;
+      box-shadow: 0 0 24px rgba(255,69,0,.4);
+    }
+    .nav-name { font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: .03em; }
+    .nav-links { display: flex; align-items: center; gap: 40px; list-style: none; }
+    .nav-link-btn {
+      background: none; border: none; font-family: 'Syne', sans-serif;
+      font-size: 13px; color: var(--muted); cursor: none;
+      transition: color .2s; letter-spacing: .04em; font-weight: 600;
+    }
+    .nav-link-btn:hover { color: var(--text); }
+    .btn-nav {
+      padding: 9px 24px; background: var(--fire); color: #fff;
+      border-radius: 8px; text-decoration: none;
+      font-size: 13px; font-weight: 700; letter-spacing: .05em;
+      transition: all .3s; box-shadow: 0 0 0 0 rgba(255,69,0,.4);
+      animation: np 3s 3s ease-in-out infinite;
+    }
+    .btn-nav:hover { background: var(--fire2); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,69,0,.45); }
+    @keyframes np { 0%,100%{box-shadow:0 0 0 0 rgba(255,69,0,.3)}50%{box-shadow:0 0 18px 5px rgba(255,69,0,.15)} }
+
+    /* HERO */
+    .hero {
+      position: relative; z-index: 5;
+      min-height: 100vh;
+      display: grid; grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 140px 64px 80px; gap: 60px;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: '';
+      position: absolute; right: 0; top: 0; bottom: 0; width: 55%;
+      background: linear-gradient(135deg, transparent 0%, rgba(255,69,0,.03) 100%);
+      clip-path: polygon(8% 0, 100% 0, 100% 100%, 0% 100%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--fire2);
+      letter-spacing: .16em; text-transform: uppercase;
+      margin-bottom: 28px;
+      opacity: 0; animation: fu .7s .2s forwards;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--fire2); box-shadow: 0 0 10px var(--fire2); animation: blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1}50%{opacity:.2} }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(72px,9.5vw,148px);
+      line-height: .9; letter-spacing: .01em;
+      margin-bottom: 10px;
+      opacity: 0; animation: fu .9s .35s forwards;
+    }
+    .line-main { display: block; color: var(--text); }
+    .line-fire {
+      display: block;
+      background: linear-gradient(90deg, var(--fire) 0%, var(--fire2) 45%, var(--ember) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; background-size: 200% auto;
+      animation: fu .9s .35s forwards, fg 3s 1.3s linear infinite;
+    }
+    @keyframes fg { 0%{background-position:0% center}100%{background-position:200% center} }
+
+    .hero-version {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; color: var(--muted);
+      letter-spacing: .25em; text-transform: uppercase;
+      margin-bottom: 28px;
+      opacity: 0; animation: fu .7s .55s forwards;
+    }
+
+    .hero-subtitle {
+      font-size: 16px; color: var(--muted);
+      line-height: 1.8; font-weight: 400; max-width: 440px;
+      margin-bottom: 44px;
+      opacity: 0; animation: fu .7s .7s forwards;
+    }
+
+    .hero-ctas {
+      display: flex; gap: 14px; flex-wrap: wrap;
+      opacity: 0; animation: fu .7s .85s forwards;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 36px; background: var(--fire);
+      color: #fff; font-family: 'Syne', sans-serif;
+      font-size: 14px; font-weight: 700; letter-spacing: .04em;
+      border-radius: 10px; text-decoration: none;
+      position: relative; overflow: hidden;
+      transition: all .3s cubic-bezier(.34,1.56,.64,1);
+      box-shadow: 0 6px 32px rgba(255,69,0,.35);
+    }
+    .btn-primary::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg,rgba(255,255,255,.18),transparent);
+      opacity: 0; transition: opacity .2s;
+    }
+    .btn-primary:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 14px 44px rgba(255,69,0,.5); }
+    .btn-primary:hover::before { opacity: 1; }
+
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 16px 30px; background: transparent;
+      color: var(--text); font-family: 'Syne', sans-serif;
+      font-size: 14px; font-weight: 600; letter-spacing: .04em;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      cursor: none; transition: all .3s;
+    }
+    .btn-secondary:hover { border-color: rgba(255,140,0,.4); background: rgba(255,140,0,.06); transform: translateY(-2px); }
+
+    /* HERO RIGHT */
+    .hero-right {
+      display: flex; flex-direction: column; gap: 16px;
+      opacity: 0; animation: fl .9s .5s forwards;
+    }
+    @keyframes fl { from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)} }
+
+    .hero-card-main {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 32px;
+      position: relative; overflow: hidden;
+      transition: transform .5s cubic-bezier(.34,1.2,.64,1), box-shadow .5s;
+      transform-style: preserve-3d;
+    }
+    .hero-card-main::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--fire), var(--fire2), var(--ember));
+    }
+    .hcm-tag {
+      display: inline-block; padding: 4px 12px;
+      background: rgba(255,69,0,.12); border: 1px solid rgba(255,69,0,.25);
+      border-radius: 100px; color: var(--fire2);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 16px;
+    }
+    .hcm-title { font-family: 'Bebas Neue', sans-serif; font-size: 44px; color: var(--text); line-height: 1; margin-bottom: 6px; }
+    .hcm-sub { font-size: 13px; color: var(--muted); margin-bottom: 22px; }
+    .hcm-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+    .hcm-stat { background: rgba(255,255,255,.03); border: 1px solid var(--border); border-radius: 12px; padding: 14px 12px; text-align: center; }
+    .hcm-stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--text); line-height: 1; }
+    .hcm-stat-num sub { font-size: 12px; color: var(--fire2); vertical-align: bottom; }
+    .hcm-stat-lbl { font-size: 10px; color: var(--muted); letter-spacing: .06em; margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
+
+    .hero-card-prize {
+      background: linear-gradient(135deg, rgba(255,215,0,.1), rgba(255,140,0,.05));
+      border: 1.5px solid rgba(255,215,0,.22);
+      border-radius: 16px; padding: 22px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      animation: pp 3s 2s ease-in-out infinite;
+    }
+    @keyframes pp { 0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,.1)}50%{box-shadow:0 0 28px 6px rgba(255,215,0,.08)} }
+    .prize-lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(255,215,0,.55); letter-spacing: .14em; text-transform: uppercase; margin-bottom: 4px; }
+    .prize-val { font-family: 'Bebas Neue', sans-serif; font-size: 56px; color: var(--ember); line-height: 1; }
+    .prize-desc { font-size: 12px; color: rgba(255,215,0,.45); margin-top: 2px; }
+    .prize-icon { font-size: 48px; opacity: .7; }
+
+    /* SCROLL HINT */
+    .scroll-hint {
+      position: absolute; bottom: 32px; left: 64px;
+      display: flex; align-items: center; gap: 10px;
+      opacity: 0; animation: fu .5s 1.6s forwards;
+    }
+    .scroll-hint span { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: .15em; text-transform: uppercase; }
+    .sh-line { width: 48px; height: 1px; background: linear-gradient(90deg, var(--fire), transparent); animation: sha 2s 2s ease-in-out infinite; }
+    @keyframes sha { 0%,100%{transform:scaleX(1);opacity:1}50%{transform:scaleX(1.5);opacity:.4} }
+
+    @keyframes fu { from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)} }
+
+    /* SECTION */
+    .section { position: relative; z-index: 5; max-width: 1280px; margin: 0 auto; padding: 100px 64px; }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--fire2); letter-spacing: .16em; text-transform: uppercase;
+      display: flex; align-items: center; gap: 12px; margin-bottom: 18px;
+    }
+    .section-label::after { content: ''; width: 48px; height: 1px; background: var(--fire2); opacity: .4; }
+    .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(40px,6vw,80px); line-height: 1; color: var(--text); margin-bottom: 18px; }
+    .section-subtitle { font-size: 16px; color: var(--muted); max-width: 520px; line-height: 1.8; margin-bottom: 56px; }
+
+    .divider {
+      height: 1px; position: relative; z-index: 5;
+      background: linear-gradient(90deg, transparent 0%, var(--border) 30%, rgba(255,69,0,.08) 50%, var(--border) 70%, transparent 100%);
+    }
+
+    /* ABOUT GRID */
+    .event-details-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 44px; }
+    .event-detail-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 22px 20px;
+      display: flex; align-items: flex-start; gap: 14px;
+      transition: all .4s cubic-bezier(.34,1.2,.64,1);
+      position: relative; overflow: hidden;
+    }
+    .event-detail-card::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--fire), var(--fire2));
+      transform: scaleX(0); transform-origin: left; transition: transform .3s;
+    }
+    .event-detail-card:hover { transform: translateY(-5px); border-color: rgba(255,140,0,.25); }
+    .event-detail-card:hover::after { transform: scaleX(1); }
+    .detail-icon { font-size: 26px; flex-shrink: 0; }
+    .detail-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px; }
+    .detail-value { font-size: 15px; font-weight: 700; color: var(--text); }
+
+    .event-tagline {
+      background: linear-gradient(135deg, rgba(255,69,0,.07), rgba(255,140,0,.04));
+      border: 1px solid rgba(255,69,0,.15); border-radius: 20px; padding: 48px 56px; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .event-tagline::after { content: '⚡'; position: absolute; right: -10px; bottom: -50px; font-size: 220px; opacity: .025; pointer-events: none; line-height: 1; }
+    .event-tagline h3 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(32px,4.5vw,56px); color: var(--text); margin-bottom: 10px; }
+    .event-tagline p { font-size: 15px; color: var(--muted); }
+
+    /* BENEFITS */
+    .benefits-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+    .benefit-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px; cursor: default;
+      transition: all .4s cubic-bezier(.34,1.2,.64,1);
+    }
+    .benefit-card:hover { border-color: rgba(255,140,0,.3); transform: translateY(-5px) scale(1.01); box-shadow: 0 20px 48px rgba(0,0,0,.3); }
+    .benefit-icon { font-size: 30px; display: block; margin-bottom: 14px; }
+    .benefit-card h4 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .benefit-card p { font-size: 14px; color: var(--muted); line-height: 1.75; }
+
+    /* EVENT CARD */
+    .events-grid.single-event { display: block; }
+    .event-card.featured {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 24px; padding: 56px;
+      position: relative; overflow: hidden;
+    }
+    .event-card.featured::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--fire), var(--fire2), var(--ember));
+    }
+    .ec-number {
+      display: inline-block; padding: 5px 14px;
+      background: rgba(255,69,0,.1); border: 1px solid rgba(255,69,0,.22);
+      border-radius: 100px; color: var(--fire2);
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 18px;
+    }
+    .ec-icon { display: none; }
+    .ec-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(36px,5vw,64px); line-height: 1; margin-bottom: 16px; color: var(--text); }
+    .ec-desc { font-size: 15px; color: var(--muted); max-width: 560px; line-height: 1.8; margin-bottom: 36px; }
+    .ec-details { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 36px; }
+    .ec-detail { display: flex; align-items: center; gap: 9px; padding: 9px 16px; background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 10px; font-size: 13px; color: var(--text); }
+    .ec-detail-icon { font-size: 15px; }
+    .event-highlights { background: rgba(255,255,255,.03); border: 1px solid var(--border); border-radius: 14px; padding: 24px; }
+    .event-highlights h4 { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 14px; }
+    .event-highlights ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .event-highlights li { font-size: 14px; color: var(--text); display: flex; align-items: center; gap: 10px; }
+
+    footer {
+      position: relative; z-index: 5; padding: 36px 64px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 13px; color: var(--muted);
+    }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(36px); transition: opacity .8s ease, transform .8s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .rd1{transition-delay:.08s}.rd2{transition-delay:.16s}.rd3{transition-delay:.24s}
+    .rd4{transition-delay:.32s}.rd5{transition-delay:.40s}.rd6{transition-delay:.48s}
+
+    @media(max-width:1100px){
+      .hero{grid-template-columns:1fr;padding:120px 36px 80px}.hero::after{display:none}
+      nav,nav.scrolled{padding:16px 36px}.section{padding:80px 36px}
+      .event-details-grid{grid-template-columns:repeat(2,1fr)}.benefits-grid{grid-template-columns:repeat(2,1fr)}
+      .scroll-hint{left:36px}
+    }
+    @media(max-width:680px){
+      nav,nav.scrolled{padding:14px 20px}.nav-links{display:none}
+      .hero{padding:100px 20px 80px}.section{padding:60px 20px}
+      .event-details-grid{grid-template-columns:1fr 1fr;gap:10px}.benefits-grid{grid-template-columns:1fr}
+      .event-card.featured{padding:28px 22px}.footer,.footer p{text-align:center}
+      footer{flex-direction:column;gap:8px;padding:28px 20px}.scroll-hint{left:20px}
+    }
+  </style>
 </head>
 <body>
+  <div class="cursor-dot" id="curDot"></div>
+  <div class="cursor-ring" id="curRing"></div>
+  <canvas id="fc"></canvas>
 
-  <!-- Background orbs -->
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-
-  <!-- Navigation -->
   <header class="site-header">
-    <nav class="nav">
+    <nav id="navbar">
       <a href="index.html" class="nav-brand">
-        <div class="nav-logo">CT</div>
+        <div class="nav-logo">CE</div>
         <span class="nav-name">Computer Engineering</span>
       </a>
       <ul class="nav-links">
-        <li><button class="nav-link-btn" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">About</button></li>
-        <li><button class="nav-link-btn" onclick="document.getElementById('events').scrollIntoView({behavior:'smooth'})">Event Details</button></li>
-        <li><a href="register.html" class="btn-nav">Register Now →</a></li>
+        <li><button class="nav-link-btn" onclick="goTo('about')">About</button></li>
+        <li><button class="nav-link-btn" onclick="goTo('events')">Event</button></li>
+        <li><button class="nav-link-btn" onclick="goTo('why-participate')">Why Join</button></li>
+        <li><a href="register.html" class="btn-nav">Register →</a></li>
       </ul>
     </nav>
 
-    <!-- Hero -->
-    <div class="hero">
-      <div class="hero-content">
-        <div class="hero-eyebrow fade-up fade-up-1">
-          <span class="dot"></span>
-          Applications Open · 2026
-        </div>
-        <h1 class="hero-title fade-up fade-up-2">
-          Build. Create.<br>
-          <span class="highlight">Innovate.</span>
+    <div class="hero" id="hero">
+      <div class="hero-left">
+        <div class="hero-eyebrow"><span class="dot"></span> Applications Open · 2026</div>
+        <h1 class="hero-title">
+          <span class="line-main" id="st">TECH BLAZE</span>
+          <span class="line-fire">Ignite.</span>
         </h1>
-        <p class="hero-subtitle fade-up fade-up-3">
-          Join Tech Blaze 3.0 — A 12-hour hackathon from the Department of 
-          Computer Engineering. Bring your best ideas and compete for glory.
+        <p class="hero-version">// Version 3.0 · 12-Hour Hackathon</p>
+        <p class="hero-subtitle">
+          The Department of Computer Engineering presents its most explosive hackathon yet.
+          Build fast. Think bold. Win glory.
         </p>
-        <div class="hero-actions fade-up fade-up-3">
+        <div class="hero-ctas">
           <a href="register.html" class="btn-primary">Register Your Team →</a>
-          <button class="btn-secondary" onclick="document.getElementById('events').scrollIntoView({behavior:'smooth'})">Learn More</button>
+          <button class="btn-secondary" onclick="goTo('about')">Explore ↓</button>
         </div>
       </div>
 
-    <!-- Hero Visual -->
-    <div class="hero-visual">
-      <div class="event-cards-stack">
-        <div class="event-card-preview ecp-1">
-          <div class="ecp-icon">⚡</div>
-          <div class="ecp-badge badge-blue">Hackathon</div>
-          <div class="ecp-title">Tech Blaze 3.0</div>
-          <div class="ecp-meta">⏰ 12-Hour Challenge · Teams of 4</div>
-        </div>
-
-        <!-- Prize Pool Card -->
-        <div class="prize-pool-card">
-          <div class="prize-label">PRIZE POOL</div>
-          <div class="prize-display">
-            <span class="prize-currency">₹</span>
-            <span class="prize-value">10K</span>
+      <div class="hero-right">
+        <div class="hero-card-main" id="hcm">
+          <div class="hcm-tag">⚡ Main Event</div>
+          <div class="hcm-title">Tech Blaze 3.0</div>
+          <div class="hcm-sub">Department of Computer Engineering · 2026</div>
+          <div class="hcm-stats">
+            <div class="hcm-stat"><div class="hcm-stat-num" id="cn1">12<sub>hrs</sub></div><div class="hcm-stat-lbl">Non-Stop</div></div>
+            <div class="hcm-stat"><div class="hcm-stat-num" id="cn2">4<sub>max</sub></div><div class="hcm-stat-lbl">Per Team</div></div>
+            <div class="hcm-stat"><div class="hcm-stat-num" id="cn3">250<sub>₹/p</sub></div><div class="hcm-stat-lbl">Entry Fee</div></div>
           </div>
-          <div class="prize-description">To Be Won</div>
+        </div>
+        <div class="hero-card-prize" id="hcp">
+          <div>
+            <div class="prize-lbl">Total Prize Pool</div>
+            <div class="prize-val">₹10K</div>
+            <div class="prize-desc">Cash prizes + Certificates</div>
+          </div>
+          <div class="prize-icon">🏆</div>
         </div>
       </div>
 
-      <!-- Quick Stats -->
-      <div class="hero-stats">
-        <div class="stat-item">
-          <div class="stat-number">12<span class="stat-unit">hrs</span></div>
-          <div class="stat-label">Non-Stop Coding</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">4<span class="stat-unit">max</span></div>
-          <div class="stat-label">Team Members</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">₹250<span class="stat-unit">/person</span></div>
-          <div class="stat-label">Registration</div>
-        </div>
+      <div class="scroll-hint">
+        <span>Scroll</span><div class="sh-line"></div>
       </div>
-    </div>
     </div>
   </header>
 
   <div class="divider"></div>
 
-  <!-- About Section -->
   <section class="section" id="about">
-    <div class="section-label">About</div>
-    <h2 class="section-title">Where Engineering Meets Innovation</h2>
-    <p class="section-subtitle">
-      The Department of Computer Engineering proudly presents Tech Blaze 3.0, 
-      an epic 12-hour hackathon bringing together brilliant minds to create, collaborate, and innovate.
-    </p>
-
-    <!-- Event Quick Details Grid -->
+    <div class="section-label reveal">About</div>
+    <h2 class="section-title reveal rd1">Where Engineering<br>Meets Innovation</h2>
+    <p class="section-subtitle reveal rd2">Tech Blaze 3.0 brings together the brightest minds for 12 hours of non-stop building, collaborating, and pushing the limits of what's possible.</p>
     <div class="event-details-grid">
-      <div class="event-detail-card">
-        <div class="detail-icon">⚡</div>
-        <div class="detail-content">
-          <div class="detail-label">Duration</div>
-          <div class="detail-value">12 Hours Non-Stop</div>
-        </div>
-      </div>
-
-      <div class="event-detail-card">
-        <div class="detail-icon">👥</div>
-        <div class="detail-content">
-          <div class="detail-label">Team Size</div>
-          <div class="detail-value">1-4 Members</div>
-        </div>
-      </div>
-
-      <div class="event-detail-card">
-        <div class="detail-icon">💰</div>
-        <div class="detail-content">
-          <div class="detail-label">Registration Fee</div>
-          <div class="detail-value">₹250 / Person</div>
-        </div>
-      </div>
-
-      <div class="event-detail-card">
-        <div class="detail-icon">🏆</div>
-        <div class="detail-content">
-          <div class="detail-label">Prizes & Recognition</div>
-          <div class="detail-value">Cash + Certificates</div>
-        </div>
-      </div>
+      <div class="event-detail-card reveal rd1"><div class="detail-icon">⚡</div><div><div class="detail-label">Duration</div><div class="detail-value">12 Hours</div></div></div>
+      <div class="event-detail-card reveal rd2"><div class="detail-icon">👥</div><div><div class="detail-label">Team Size</div><div class="detail-value">1–4 Members</div></div></div>
+      <div class="event-detail-card reveal rd3"><div class="detail-icon">💰</div><div><div class="detail-label">Entry Fee</div><div class="detail-value">₹250 / Person</div></div></div>
+      <div class="event-detail-card reveal rd4"><div class="detail-icon">🏆</div><div><div class="detail-label">Prizes</div><div class="detail-value">Cash + Certs</div></div></div>
     </div>
-
-    <!-- Event Tagline -->
-    <div class="event-tagline">
+    <div class="event-tagline reveal">
       <h3>Innovate. Code. Transform.</h3>
-      <p>Build solutions that matter. Compete for glory. Network with the best.</p>
+      <p>Build solutions that matter. Compete for glory. Network with the best minds in the room.</p>
     </div>
   </section>
 
   <div class="divider"></div>
 
-  <!-- Why Participate Section -->
   <section class="section" id="why-participate">
-    <div class="section-label">Why Participate</div>
-    <h2 class="section-title">Why Tech Blaze 3.0?</h2>
-    
-    <div class="benefits-grid">
-      <div class="benefit-card">
-        <div class="benefit-icon">🎯</div>
-        <h4>Real-World Problems</h4>
-        <p>Work on challenges that matter. Build solutions with real-world applications and impact.</p>
-      </div>
-
-      <div class="benefit-card">
-        <div class="benefit-icon">🧠</div>
-        <h4>Learn & Grow</h4>
-        <p>Learn from experienced mentors and industry professionals. Expand your technical skills.</p>
-      </div>
-
-      <div class="benefit-card">
-        <div class="benefit-icon">🤝</div>
-        <h4>Network with Peers</h4>
-        <p>Connect with passionate developers, designers, and innovators from across the region.</p>
-      </div>
-
-      <div class="benefit-card">
-        <div class="benefit-icon">🏅</div>
-        <h4>Win Big</h4>
-        <p>Compete for impressive cash prizes, certificates, and recognition for your innovations.</p>
-      </div>
-
-      <div class="benefit-card">
-        <div class="benefit-icon">⚙️</div>
-        <h4>Tech Stack Freedom</h4>
-        <p>Use any technology, framework, or language. Complete freedom to build your way.</p>
-      </div>
-
-      <div class="benefit-card">
-        <div class="benefit-icon">🎉</div>
-        <h4>Amazing Vibes</h4>
-        <p>Experience an energetic atmosphere with free food, swag, and unlimited caffeine.</p>
-      </div>
+    <div class="section-label reveal">Why Participate</div>
+    <h2 class="section-title reveal rd1">6 Reasons to Show Up</h2>
+    <div class="benefits-grid" style="margin-bottom:0">
+      <div class="benefit-card reveal rd1"><span class="benefit-icon">🎯</span><h4>Real-World Problems</h4><p>Work on challenges that matter and build solutions with genuine real-world applications.</p></div>
+      <div class="benefit-card reveal rd2"><span class="benefit-icon">🧠</span><h4>Learn & Grow</h4><p>Learn from experienced mentors and industry professionals during the event.</p></div>
+      <div class="benefit-card reveal rd3"><span class="benefit-icon">🤝</span><h4>Network with Peers</h4><p>Connect with passionate developers, designers, and innovators from across the region.</p></div>
+      <div class="benefit-card reveal rd4"><span class="benefit-icon">🏅</span><h4>Win Big</h4><p>Compete for impressive cash prizes, certificates, and recognition for your work.</p></div>
+      <div class="benefit-card reveal rd5"><span class="benefit-icon">⚙️</span><h4>Total Tech Freedom</h4><p>Use any stack, framework, or language. Build your way, your rules.</p></div>
+      <div class="benefit-card reveal rd6"><span class="benefit-icon">🎉</span><h4>Incredible Atmosphere</h4><p>Free food, great vibes, unlimited caffeine, and memories that last a lifetime.</p></div>
     </div>
   </section>
 
   <div class="divider"></div>
 
-  <!-- Events Section -->
   <section class="section" id="events">
-    <div class="section-label">Event Details</div>
-    <h2 class="section-title">Tech Blaze 3.0 Hackathon</h2>
-    <p class="section-subtitle">
-      The ultimate platform to showcase your coding skills, creativity, and problem-solving abilities. 
-      Code non-stop for 12 hours and win amazing prizes.
-    </p>
-
-    <div class="events-grid single-event">
+    <div class="section-label reveal">Event Details</div>
+    <h2 class="section-title reveal rd1">Tech Blaze 3.0</h2>
+    <p class="section-subtitle reveal rd2">The ultimate platform to showcase your skills, creativity, and problem-solving abilities.</p>
+    <div class="events-grid single-event reveal rd3">
       <div class="event-card featured">
         <div class="ec-number">12-Hour Challenge</div>
         <span class="ec-icon">⚡</span>
         <h3 class="ec-title">Tech Blaze 3.0</h3>
-        <p class="ec-desc">
-          Push your limits in this non-stop hackathon where teams of up to 4 build real solutions 
-          to real-world problems. Mentors, resources, and unlimited caffeine included. Show us what you've got.
-        </p>
+        <p class="ec-desc">Push your limits in this non-stop hackathon where teams of up to 4 build real solutions to real-world problems. Mentors, resources, and unlimited caffeine included.</p>
         <div class="ec-details">
-          <div class="ec-detail">
-            <div class="ec-detail-icon">👥</div>
-            <span>Teams of 1–4 participants</span>
-          </div>
-          <div class="ec-detail">
-            <div class="ec-detail-icon">⏱️</div>
-            <span>12 continuous hours</span>
-          </div>
-          <div class="ec-detail">
-            <div class="ec-detail-icon">🏆</div>
-            <span>Cash prizes & recognition</span>
-          </div>
-          <div class="ec-detail">
-            <div class="ec-detail-icon">🍕</div>
-            <span>Meals & refreshments provided</span>
-          </div>
+          <div class="ec-detail"><div class="ec-detail-icon">👥</div>Teams of 1–4 participants</div>
+          <div class="ec-detail"><div class="ec-detail-icon">⏱️</div>12 continuous hours</div>
+          <div class="ec-detail"><div class="ec-detail-icon">🏆</div>Cash prizes & recognition</div>
+          <div class="ec-detail"><div class="ec-detail-icon">🍕</div>Meals & refreshments provided</div>
         </div>
-
         <div class="event-highlights">
           <h4>What to Expect</h4>
           <ul>
             <li>✨ Expert mentors and industry professionals</li>
-            <li>💡 Exciting problem statements & themes</li>
-            <li>🎁 Multiple prize categories</li>
-            <li>🤝 Networking with fellow developers</li>
-            <li>📊 Live judging and feedback</li>
+            <li>💡 Exciting problem statements and themes revealed on the day</li>
+            <li>🎁 Multiple prize categories for different tracks</li>
+            <li>🤝 Networking with fellow developers and innovators</li>
+            <li>📊 Live judging and instant feedback sessions</li>
           </ul>
         </div>
       </div>
@@ -241,10 +497,75 @@
   </section>
 
   <footer>
-    <p>© 2026 Department of Computer Engineering. All rights reserved.</p>
-    <p></p>
+    <span>© 2026 Department of Computer Engineering. All rights reserved.</span>
+    <a href="register.html" style="color:var(--fire2);text-decoration:none;font-weight:600;">Register Now →</a>
   </footer>
 
   <script src="script.js"></script>
+  <script>
+    // CURSOR
+    const dot = document.getElementById('curDot'), ring = document.getElementById('curRing');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+    (function tick(){dot.style.left=mx+'px';dot.style.top=my+'px';rx+=(mx-rx)*.11;ry+=(my-ry)*.11;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(tick)})();
+    document.querySelectorAll('a,button').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{dot.classList.add('hov');ring.classList.add('hov')});
+      el.addEventListener('mouseleave',()=>{dot.classList.remove('hov');ring.classList.remove('hov')});
+    });
+
+    // CANVAS PARTICLES
+    const cv=document.getElementById('fc'),cx=cv.getContext('2d');
+    let W,H;
+    function rsz(){W=cv.width=innerWidth;H=cv.height=innerHeight}rsz();window.addEventListener('resize',rsz);
+    class Spark{
+      constructor(){this.reset()}
+      reset(){this.x=Math.random()*W;this.y=H+10;this.vx=(Math.random()-.5)*.6;this.vy=-(Math.random()*1.2+.3);this.sz=Math.random()*2+.4;this.life=1;this.decay=Math.random()*.006+.003;this.col=['#ff4500','#ff8c00','#ffd700'][Math.floor(Math.random()*3)]}
+      update(){this.x+=this.vx;this.y+=this.vy;this.vx+=(Math.random()-.5)*.04;this.life-=this.decay;if(this.life<=0||this.y<-10)this.reset()}
+      draw(){cx.beginPath();cx.arc(this.x,this.y,this.sz,0,Math.PI*2);cx.fillStyle=this.col;cx.globalAlpha=this.life*.6;cx.fill()}
+    }
+    const sparks=Array.from({length:90},()=>{const s=new Spark();s.y=Math.random()*H;return s});
+    function drawLines(){for(let i=0;i<sparks.length;i++){for(let j=i+1;j<sparks.length;j++){const dx=sparks[i].x-sparks[j].x,dy=sparks[i].y-sparks[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<90){cx.beginPath();cx.moveTo(sparks[i].x,sparks[i].y);cx.lineTo(sparks[j].x,sparks[j].y);cx.strokeStyle='#ff4500';cx.globalAlpha=(1-d/90)*.07;cx.lineWidth=.5;cx.stroke()}}}}
+    (function anim(){cx.clearRect(0,0,W,H);sparks.forEach(s=>{s.update();s.draw()});cx.globalAlpha=1;drawLines();requestAnimationFrame(anim)})();
+
+    // PARALLAX 3D CARDS
+    window.addEventListener('mousemove',e=>{
+      const xP=(e.clientX/W-.5)*14,yP=(e.clientY/H-.5)*14;
+      const hcm=document.getElementById('hcm'),hcp=document.getElementById('hcp');
+      if(hcm)hcm.style.transform=`perspective(800px) rotateY(${xP*.3}deg) rotateX(${-yP*.25}deg)`;
+      if(hcp)hcp.style.transform=`perspective(800px) rotateY(${xP*.15}deg) rotateX(${-yP*.1}deg)`;
+    });
+
+    // NAV SCROLL
+    window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>60));
+
+    function goTo(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'})}
+
+    // SCROLL REVEAL
+    const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');ro.unobserve(e.target)}}),{threshold:.1});
+    document.querySelectorAll('.reveal').forEach(r=>ro.observe(r));
+
+    // TEXT SCRAMBLE on hero title
+    const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#!';
+    function scramble(el,final,dur=1200){
+      const total=Math.floor(dur/16);let f=0;
+      const iv=setInterval(()=>{
+        let o='';
+        for(let i=0;i<final.length;i++){if(final[i]===' '){o+=' ';continue}i<(f/total*final.length)?o+=final[i]:o+=chars[Math.floor(Math.random()*chars.length)]}
+        el.textContent=o;f++;if(f>total){el.textContent=final;clearInterval(iv)}
+      },16);
+    }
+    setTimeout(()=>scramble(document.getElementById('st'),'TECH BLAZE',1300),700);
+
+    // COUNTER ANIMATION
+    function animNum(el,target,delay=800){
+      setTimeout(()=>{
+        let n=0;const step=target/55;
+        const iv=setInterval(()=>{n=Math.min(n+step,target);el.childNodes[0].textContent=Math.floor(n);if(n>=target)clearInterval(iv)},18);
+      },delay);
+    }
+    animNum(document.getElementById('cn1'),12,900);
+    animNum(document.getElementById('cn2'),4,1000);
+    animNum(document.getElementById('cn3'),250,1100);
+  </script>
 </body>
 </html>
