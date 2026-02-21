@@ -4,423 +4,180 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register — Tech Blaze 3.0 Hackathon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;700&display=swap">
   <link rel="stylesheet" href="style.css">
   <style>
-    /* ── Extra animations matching index.html ── */
-    @keyframes orbFloat1 {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(-30px, 20px) scale(1.05); }
+    /* ── FIX: Force hide optional members by default ── */
+    .optional-member {
+      display: none !important;
     }
-    @keyframes orbFloat2 {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(20px, -30px) scale(1.08); }
+    .optional-member.show {
+      display: block !important;
+      animation: slideIn .4s ease forwards;
     }
-    @keyframes orbFloat3 {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(-15px, -20px) scale(0.95); }
-    }
-
-    .orb-1 { animation: orbFloat1 12s ease-in-out infinite; }
-    .orb-2 { animation: orbFloat2 15s ease-in-out infinite; }
-    .orb-3 { animation: orbFloat3 10s ease-in-out infinite; }
-
-    /* ── Matching nav bar ── */
-    .reg-topnav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px 40px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(6, 9, 18, 0.6);
-      backdrop-filter: blur(12px);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    .reg-topnav-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      transition: transform 0.2s ease;
+    /* ── TEAM SIZE PILLS ── */
+    .size-pills {
+      display: flex; gap: 10px;
     }
-
-    .reg-topnav-brand:hover { transform: translateY(-2px); }
-
-    .reg-topnav-logo {
-      width: 36px; height: 36px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border-radius: 8px;
-      display: grid;
-      place-items: center;
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 14px;
-      color: white;
-      box-shadow: 0 4px 12px rgba(99,179,237,0.25);
+    .sz-pill {
+      width: 54px; height: 54px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 12px; font-family: 'Syne', sans-serif;
+      font-size: 20px; font-weight: 700;
+      color: rgba(255,255,255,0.35);
+      cursor: pointer; transition: all .25s;
+      user-select: none;
     }
+    .sz-pill:hover { border-color: rgba(99,179,237,0.4); color: #fff; background: rgba(99,179,237,0.07); }
+    .sz-pill.active { border-color: #63b3ed; background: rgba(99,179,237,0.16); color: #fff; box-shadow: 0 0 18px rgba(99,179,237,0.25); }
 
-    .reg-topnav-name {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 15px;
-      color: var(--text);
-      letter-spacing: 0.02em;
+    /* Hide the real select; drive via JS */
+    #team_size { display: none; }
+
+    /* ── MEMBER PROGRESS DOTS ── */
+    .member-dots {
+      display: flex; gap: 7px; margin-bottom: 22px;
     }
-
-    .reg-topnav-actions {
-      display: flex;
-      align-items: center;
-      gap: 20px;
+    .mdot {
+      height: 4px; flex: 1; border-radius: 2px;
+      background: rgba(255,255,255,0.07);
+      transition: background .35s;
     }
+    .mdot.on { background: #63b3ed; }
 
-    .reg-topnav-back {
-      font-size: 13px;
-      color: var(--text-muted);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: color 0.2s ease;
-      font-family: 'DM Sans', sans-serif;
+    /* ── PARTICIPANT CARD HEADER ── */
+    .participant-label {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.4);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 18px; padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
     }
-    .reg-topnav-back:hover { color: var(--text); }
-
-    .reg-topnav-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      background: rgba(99,179,237,0.1);
-      border: 1px solid rgba(99,179,237,0.2);
-      border-radius: 100px;
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--accent);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+    .p-num {
+      width: 26px; height: 26px; border-radius: 6px;
+      background: rgba(99,179,237,0.15); border: 1px solid rgba(99,179,237,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: #63b3ed; flex-shrink: 0;
     }
-
-    .reg-topnav-eyebrow .dot {
-      width: 6px; height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
-      animation: pulse-dot 2s infinite;
-    }
-
-    /* ── Sidebar entry animation ── */
-    .reg-sidebar {
-      animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    @keyframes slideInLeft {
-      from { opacity: 0; transform: translateX(-24px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-
-    /* ── Sidebar orb ── */
-    .reg-sidebar {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .reg-sidebar::after {
-      content: '';
-      position: absolute;
-      bottom: -80px;
-      right: -80px;
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(99,179,237,0.08) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-      filter: blur(40px);
-    }
-
-    /* ── Sidebar progress track ── */
-    .reg-steps-track {
-      position: relative;
-      padding-left: 16px;
-    }
-
-    .reg-steps-track::before {
-      content: '';
-      position: absolute;
-      left: 31px;
-      top: 24px;
-      bottom: 24px;
-      width: 1px;
-      background: var(--border);
-    }
-
-    /* ── Form section stagger ── */
-    .form-section:nth-child(1) { animation-delay: 0.15s; opacity: 0; animation-fill-mode: forwards; }
-    .form-section:nth-child(2) { animation-delay: 0.25s; opacity: 0; animation-fill-mode: forwards; }
-    .form-section:nth-child(3) { animation-delay: 0.35s; opacity: 0; animation-fill-mode: forwards; }
-
-    /* ── Participant card entrance ── */
-    .participant-card {
-      animation: fadeUp 0.4s ease forwards;
-    }
-
-    .participant-card.optional-member[style*="block"] {
-      animation: scaleInCard 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    }
-
-    @keyframes scaleInCard {
-      from { opacity: 0; transform: scale(0.97) translateY(8px); }
-      to   { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    /* ── Gradient top border on sidebar ── */
-    .reg-sidebar::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
-    }
-
-    /* ── Input hover lift ── */
-    input:hover:not(:focus), 
-    textarea:hover:not(:focus), 
-    select:hover:not(:focus) {
-      border-color: rgba(99,179,237,0.25);
-    }
-
-    /* ── Step connector lines ── */
-    .reg-step {
-      position: relative;
-    }
-
-    /* ── Active step glow ── */
-    .reg-step.active {
-      box-shadow: 0 0 0 1px rgba(99,179,237,0.1), 0 4px 16px rgba(99,179,237,0.08);
-    }
-
-    /* ── Stat mini-cards inside sidebar ── */
-    .sidebar-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 32px;
-    }
-
-    .sidebar-stat {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 14px 12px;
-      text-align: center;
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .sidebar-stat::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent), transparent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .sidebar-stat:hover {
-      border-color: var(--border-active);
-      transform: translateY(-3px);
-      box-shadow: 0 6px 16px rgba(99,179,237,0.12);
-    }
-
-    .sidebar-stat:hover::before { opacity: 1; }
-
-    .sidebar-stat-val {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 18px;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 2px;
-    }
-
-    .sidebar-stat-lbl {
-      font-size: 10px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      font-weight: 500;
-    }
-
-    /* ── Required member accent ── */
-    .participant-card.required-member {
-      border-left: 2px solid rgba(99,179,237,0.4);
-    }
-
-    /* ── Form main slide in ── */
-    .reg-main {
-      animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    @keyframes slideInRight {
-      from { opacity: 0; transform: translateX(24px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-
-    /* ── Responsive nav fix ── */
-    @media (max-width: 600px) {
-      .reg-topnav { padding: 16px 20px; }
-      .reg-topnav-eyebrow { display: none; }
-    }
+    .p-leader { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.25); color: #63b3ed; border-radius: 4px; font-size: 10px; padding: 2px 8px; }
+    .p-required { background: rgba(239,83,80,0.12); border: 1px solid rgba(239,83,80,0.2); color: #ef5350; border-radius: 4px; font-size: 10px; padding: 2px 8px; }
+    .p-optional  { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); border-radius: 4px; font-size: 10px; padding: 2px 8px; }
   </style>
 </head>
 <body>
-
-  <!-- Background orbs — matching index.html exactly -->
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-
-  <!-- ── Top Navigation Bar ── -->
-  <nav class="reg-topnav fade-up fade-up-1">
-    <a href="index.html" class="reg-topnav-brand">
-      <div class="reg-topnav-logo">CT</div>
-      <span class="reg-topnav-name">Computer Engineering</span>
-    </a>
-    <div class="reg-topnav-actions">
-      <a href="index.html" class="reg-topnav-back">← Back to Home</a>
-      <div class="reg-topnav-eyebrow">
-        <span class="dot"></span>
-        Applications Open · 2026
-      </div>
-    </div>
-  </nav>
 
   <div class="reg-page">
 
-    <!-- ── Sidebar ── -->
+    <!-- Sidebar -->
     <aside class="reg-sidebar">
       <div>
         <div class="reg-sidebar-logo">
           <div class="sidebar-logo-box">CE</div>
           <span class="sidebar-brand-name">Computer Engineering</span>
         </div>
-
-        <h1 class="reg-sidebar-title">
-          Tech Blaze<br><span class="grad">3.0</span>
-        </h1>
+        <h1 class="reg-sidebar-title">Tech Blaze<br><span class="grad">3.0</span></h1>
         <p class="reg-sidebar-sub">
-          Register your team and secure your spot at the biggest hackathon of the year.
-          Teams of up to 4 members welcome. All team members must provide their details.
+          Register your team and secure your spot at the biggest hackathon of the year. Teams of up to 4 members welcome.
         </p>
-
-        <!-- Mini stats matching hero style -->
-        <div class="sidebar-stats">
-          <div class="sidebar-stat">
-            <div class="sidebar-stat-val">12<span style="font-size:10px;font-weight:600;-webkit-text-fill-color:var(--text-muted);color:var(--text-muted);">hrs</span></div>
-            <div class="sidebar-stat-lbl">Non-Stop</div>
-          </div>
-          <div class="sidebar-stat">
-            <div class="sidebar-stat-val">₹10K</div>
-            <div class="sidebar-stat-lbl">Prize Pool</div>
-          </div>
-          <div class="sidebar-stat">
-            <div class="sidebar-stat-val">4<span style="font-size:10px;font-weight:600;-webkit-text-fill-color:var(--text-muted);color:var(--text-muted);">max</span></div>
-            <div class="sidebar-stat-lbl">Team Size</div>
-          </div>
-          <div class="sidebar-stat">
-            <div class="sidebar-stat-val">₹250</div>
-            <div class="sidebar-stat-lbl">Per Person</div>
-          </div>
-        </div>
-
-        <div class="reg-steps reg-steps-track">
-          <div class="reg-step active">
-            <div class="step-num">1</div>
-            Team Information
-          </div>
-          <div class="reg-step">
-            <div class="step-num">2</div>
-            Team Members
-          </div>
-          <div class="reg-step">
-            <div class="step-num">3</div>
-            Health & Preferences
-          </div>
+        <div class="reg-steps">
+          <div class="reg-step active" id="si1"><div class="step-num">1</div>Team Information</div>
+          <div class="reg-step" id="si2"><div class="step-num">2</div>Team Members</div>
+          <div class="reg-step" id="si3"><div class="step-num">3</div>Health & Preferences</div>
         </div>
       </div>
-
       <div class="sidebar-footer">
         <p>Questions? Reach out to the organising team.</p>
-        <p style="margin-top:4px;">© 2026 CE Department</p>
+        <p style="margin-top:4px">© 2026 CE Department</p>
       </div>
     </aside>
 
-    <!-- ── Main Form Area ── -->
+    <!-- Main -->
     <main class="reg-main">
-      <div class="reg-main-header">
+      <div class="reg-main-header fade-up fade-up-1">
         <h2 class="reg-main-title">Team Registration</h2>
         <p class="reg-main-sub">Fields marked with <span class="asterisk">*</span> are required</p>
       </div>
 
-      <form id="hackForm">
+      <form id="hackForm" class="fade-up fade-up-2" novalidate>
 
-        <!-- Step 1 -->
-        <div class="form-section">
-          <div class="form-section-title">Step 1: Team Details</div>
+        <!-- STEP 1 -->
+        <div class="form-section" id="fs1">
+          <div class="form-section-title">Step 1 — Team Details</div>
           <div class="form-row">
             <div class="form-group full">
-              <label for="team">Team Name *</label>
-              <input id="team" name="team" type="text" placeholder="e.g. ByteForce, NullPointers, CodeNinjas…" required>
+              <label>Team Name *</label>
+              <input id="team" name="team" type="text" placeholder="e.g. ByteForce, NullPointers, CodeNinjas…" required autocomplete="off">
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label for="college">College / Institution *</label>
-              <input id="college" name="college" type="text" placeholder="Your college name" required>
+              <label>College / Institution *</label>
+              <input id="college" name="college" type="text" placeholder="Your college name" required autocomplete="off">
             </div>
             <div class="form-group">
-              <label for="team_size">Team Size *</label>
-              <select id="team_size" name="team_size" required onchange="updateParticipantFields()">
-                <option value="">Select team size</option>
-                <option value="1">1 Member</option>
-                <option value="2">2 Members</option>
-                <option value="3">3 Members</option>
-                <option value="4">4 Members</option>
+              <label>Team Size *</label>
+              <div class="size-pills">
+                <div class="sz-pill" data-n="1" onclick="setSize(1)">1</div>
+                <div class="sz-pill" data-n="2" onclick="setSize(2)">2</div>
+                <div class="sz-pill" data-n="3" onclick="setSize(3)">3</div>
+                <div class="sz-pill" data-n="4" onclick="setSize(4)">4</div>
+              </div>
+              <select id="team_size" name="team_size" required>
+                <option value="">Select</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
               </select>
             </div>
           </div>
         </div>
 
-        <!-- Step 2 -->
-        <div class="form-section">
-          <div class="form-section-title">Step 2: Team Members</div>
-          <p class="section-info">⚠️ Please provide complete details for all team members</p>
+        <!-- STEP 2 -->
+        <div class="form-section" id="fs2">
+          <div class="form-section-title">Step 2 — Team Members</div>
 
-          <!-- P1 -->
+          <!-- Member progress bar -->
+          <div class="member-dots">
+            <div class="mdot on" id="md1"></div>
+            <div class="mdot" id="md2"></div>
+            <div class="mdot" id="md3"></div>
+            <div class="mdot" id="md4"></div>
+          </div>
+
+          <!-- P1 — always visible -->
           <div class="participant-card required-member">
             <div class="participant-label">
-              Team Member 1 — Team Leader
+              <div class="p-num">1</div>
+              Team Leader
+              <span class="p-leader">Leader</span>
               <span class="p-required">Required</span>
             </div>
             <div class="form-row">
               <div class="form-group full">
                 <label>Full Name *</label>
-                <input name="p1" type="text" placeholder="Full name" required>
+                <input name="p1" type="text" placeholder="Full name" required autocomplete="off">
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label>Mobile Number *</label>
-                <input name="p1_phone" type="tel" placeholder="10-digit mobile (6-9 start)" pattern="[6-9]\d{9}" required maxlength="10">
+                <input name="p1_phone" type="tel" placeholder="10-digit (starts 6–9)" pattern="[6-9]\d{9}" required maxlength="10" inputmode="numeric">
               </div>
               <div class="form-group">
                 <label>Email Address *</label>
-                <input name="p1_email" type="email" placeholder="leader@email.com" required>
+                <input name="p1_email" type="email" placeholder="leader@email.com" required autocomplete="off">
               </div>
             </div>
             <div class="form-row">
@@ -435,130 +192,245 @@
             </div>
           </div>
 
-          <!-- P2 -->
-          <div class="participant-card optional-member" style="display:none;">
-            <div class="participant-label">Team Member 2<span class="p-optional">Optional</span></div>
-            <div class="form-row"><div class="form-group full"><label>Full Name</label><input name="p2" type="text" placeholder="Full name"></div></div>
-            <div class="form-row">
-              <div class="form-group"><label>Mobile Number</label><input name="p2_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10"></div>
-              <div class="form-group"><label>Email Address</label><input name="p2_email" type="email" placeholder="member2@email.com"></div>
+          <!-- P2 — hidden until size >= 2 -->
+          <div class="participant-card optional-member" id="p2c">
+            <div class="participant-label">
+              <div class="p-num">2</div>
+              Member 2
+              <span class="p-optional">Optional</span>
             </div>
-            <div class="form-row"><div class="form-group"><label>Food Preference</label><select name="p2_food"><option value="">Select option</option><option value="Vegetarian">🥦 Vegetarian</option><option value="Non-Vegetarian">🍗 Non-Vegetarian</option></select></div></div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label>Full Name</label>
+                <input name="p2" type="text" placeholder="Full name" autocomplete="off">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Mobile Number</label>
+                <input name="p2_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10" inputmode="numeric">
+              </div>
+              <div class="form-group">
+                <label>Email Address</label>
+                <input name="p2_email" type="email" placeholder="member2@email.com" autocomplete="off">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Food Preference</label>
+                <select name="p2_food">
+                  <option value="">Select option</option>
+                  <option value="Vegetarian">🥦 Vegetarian</option>
+                  <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
+                </select>
+              </div>
+            </div>
           </div>
 
-          <!-- P3 -->
-          <div class="participant-card optional-member" style="display:none;">
-            <div class="participant-label">Team Member 3<span class="p-optional">Optional</span></div>
-            <div class="form-row"><div class="form-group full"><label>Full Name</label><input name="p3" type="text" placeholder="Full name"></div></div>
-            <div class="form-row">
-              <div class="form-group"><label>Mobile Number</label><input name="p3_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10"></div>
-              <div class="form-group"><label>Email Address</label><input name="p3_email" type="email" placeholder="member3@email.com"></div>
+          <!-- P3 — hidden until size >= 3 -->
+          <div class="participant-card optional-member" id="p3c">
+            <div class="participant-label">
+              <div class="p-num">3</div>
+              Member 3
+              <span class="p-optional">Optional</span>
             </div>
-            <div class="form-row"><div class="form-group"><label>Food Preference</label><select name="p3_food"><option value="">Select option</option><option value="Vegetarian">🥦 Vegetarian</option><option value="Non-Vegetarian">🍗 Non-Vegetarian</option></select></div></div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label>Full Name</label>
+                <input name="p3" type="text" placeholder="Full name" autocomplete="off">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Mobile Number</label>
+                <input name="p3_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10" inputmode="numeric">
+              </div>
+              <div class="form-group">
+                <label>Email Address</label>
+                <input name="p3_email" type="email" placeholder="member3@email.com" autocomplete="off">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Food Preference</label>
+                <select name="p3_food">
+                  <option value="">Select option</option>
+                  <option value="Vegetarian">🥦 Vegetarian</option>
+                  <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
+                </select>
+              </div>
+            </div>
           </div>
 
-          <!-- P4 -->
-          <div class="participant-card optional-member" style="display:none;">
-            <div class="participant-label">Team Member 4<span class="p-optional">Optional</span></div>
-            <div class="form-row"><div class="form-group full"><label>Full Name</label><input name="p4" type="text" placeholder="Full name"></div></div>
-            <div class="form-row">
-              <div class="form-group"><label>Mobile Number</label><input name="p4_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10"></div>
-              <div class="form-group"><label>Email Address</label><input name="p4_email" type="email" placeholder="member4@email.com"></div>
+          <!-- P4 — hidden until size = 4 -->
+          <div class="participant-card optional-member" id="p4c">
+            <div class="participant-label">
+              <div class="p-num">4</div>
+              Member 4
+              <span class="p-optional">Optional</span>
             </div>
-            <div class="form-row"><div class="form-group"><label>Food Preference</label><select name="p4_food"><option value="">Select option</option><option value="Vegetarian">🥦 Vegetarian</option><option value="Non-Vegetarian">🍗 Non-Vegetarian</option></select></div></div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label>Full Name</label>
+                <input name="p4" type="text" placeholder="Full name" autocomplete="off">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Mobile Number</label>
+                <input name="p4_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10" inputmode="numeric">
+              </div>
+              <div class="form-group">
+                <label>Email Address</label>
+                <input name="p4_email" type="email" placeholder="member4@email.com" autocomplete="off">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Food Preference</label>
+                <select name="p4_food">
+                  <option value="">Select option</option>
+                  <option value="Vegetarian">🥦 Vegetarian</option>
+                  <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Step 3 -->
-        <div class="form-section">
-          <div class="form-section-title">Step 3: Health & Accessibility</div>
+        <!-- STEP 3 -->
+        <div class="form-section" id="fs3">
+          <div class="form-section-title">Step 3 — Health & Accessibility</div>
           <div class="form-group full">
             <label for="medical">Medical Conditions or Accessibility Needs</label>
-            <textarea id="medical" name="medical" placeholder="Let us know if any team member has allergies, medical conditions, or accessibility requirements…"></textarea>
+            <textarea id="medical" name="medical" rows="4" placeholder="Let us know if any team member has allergies, medical conditions, or accessibility requirements…"></textarea>
           </div>
         </div>
 
         <button type="submit" class="btn-submit" id="submitBtn">Submit Registration →</button>
-        <p class="form-note">By submitting, you agree to the event terms &amp; code of conduct.</p>
+        <p class="form-note">By submitting, you agree to the event terms & code of conduct.</p>
       </form>
     </main>
   </div>
 
   <script>
-    // ─── SCROLL TOP + LOADED CLASS ───
-    window.addEventListener('load', () => {
-      window.scrollTo(0, 0);
-      setTimeout(() => document.documentElement.classList.add('loaded'), 100);
-    });
+    window.scrollTo(0, 0);
+    setTimeout(() => document.documentElement.classList.add('loaded'), 100);
 
-    // ─── PARTICIPANT FIELDS ───
-    function updateParticipantFields() {
-      const size = parseInt(document.getElementById('team_size').value) || 0;
-      document.querySelectorAll('.optional-member').forEach((m, i) => {
-        const show = i < size - 1;
-        if (show) {
-          m.style.display = 'block';
-          // Re-trigger animation
-          m.style.animation = 'none';
-          m.offsetHeight; // reflow
-          m.style.animation = '';
+    // ── TEAM SIZE PILL SELECTOR ──
+    let currentSize = 0;
+
+    function setSize(n) {
+      currentSize = n;
+
+      // Update hidden select
+      document.getElementById('team_size').value = n;
+
+      // Update pill styles
+      document.querySelectorAll('.sz-pill').forEach(p => {
+        p.classList.toggle('active', parseInt(p.dataset.n) === n);
+      });
+
+      // Show/hide member cards
+      // p2c shows when n >= 2, p3c when n >= 3, p4c when n == 4
+      const cards = { p2c: 2, p3c: 3, p4c: 4 };
+      Object.entries(cards).forEach(([id, minSize]) => {
+        const card = document.getElementById(id);
+        if (n >= minSize) {
+          card.classList.add('show');
         } else {
-          m.style.display = 'none';
-          m.querySelectorAll('input,select').forEach(f => f.value = '');
+          card.classList.remove('show');
+          // Clear fields of hidden cards
+          card.querySelectorAll('input, select').forEach(f => f.value = '');
         }
       });
+
+      // Update progress dots
+      for (let i = 1; i <= 4; i++) {
+        const d = document.getElementById('md' + i);
+        if (d) d.classList.toggle('on', i <= n);
+      }
     }
 
-    // ─── PHONE VALIDATION ───
-    function validPhone(p) { return /^[6-9]\d{9}$/.test(p); }
+    // ── PHONE INPUT: digits only ──
+    document.querySelectorAll('input[type="tel"]').forEach(el => {
+      el.addEventListener('input', e => {
+        e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+      });
+    });
 
-    // ─── TOAST ───
-    function showToast(msg, type = 'info') {
+    // ── CARD FOCUS HIGHLIGHT ──
+    document.querySelectorAll('input, textarea, select').forEach(el => {
+      el.addEventListener('focus', () => el.closest('.participant-card')?.classList.add('focused'));
+      el.addEventListener('blur',  () => el.closest('.participant-card')?.classList.remove('focused'));
+    });
+
+    // ── STEP INDICATOR ──
+    const fss = [document.getElementById('fs1'), document.getElementById('fs2'), document.getElementById('fs3')];
+    const sis = [document.getElementById('si1'), document.getElementById('si2'), document.getElementById('si3')];
+    if (fss[0] && sis[0]) {
+      const sio = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            const i = fss.indexOf(e.target);
+            sis.forEach((s, j) => s.classList.toggle('active', j === i));
+          }
+        });
+      }, { threshold: 0.5 });
+      fss.forEach(s => sio.observe(s));
+    }
+
+    // ── VALIDATION ──
+    const validPhone = p => /^[6-9]\d{9}$/.test(p);
+    const validEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+    const val = name => (document.querySelector(`[name="${name}"]`)?.value || '').trim();
+
+    // ── TOAST ──
+    function toast(msg, type = 'error') {
       document.querySelector('.toast')?.remove();
       const t = document.createElement('div');
       t.className = 'toast';
       t.textContent = msg;
-      const colors = { error: '#ef5350', success: '#66bb6a', info: '#29b6f6' };
-      t.style.cssText = `position:fixed;bottom:28px;right:28px;padding:16px 24px;background:${colors[type]};color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.5);z-index:9999;max-width:400px;animation:slideInToast .3s ease forwards;`;
-      document.head.insertAdjacentHTML('beforeend', '<style>@keyframes slideInToast{from{opacity:0;transform:translateY(10px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes slideOutToast{to{opacity:0;transform:translateY(10px) scale(.95)}}</style>');
+      const c = { error: '#ef5350', success: '#66bb6a', info: '#29b6f6' }[type];
+      t.style.cssText = `position:fixed;bottom:28px;right:28px;padding:16px 24px;background:${c};color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:600;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.5);z-index:9999;max-width:400px;animation:tin .3s ease;`;
+      document.head.insertAdjacentHTML('beforeend','<style>@keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}</style>');
       document.body.appendChild(t);
-      setTimeout(() => { t.style.animation = 'slideOutToast .3s ease forwards'; setTimeout(() => t.remove(), 300); }, 4000);
+      setTimeout(() => t.remove(), 4000);
     }
 
-    // ─── FORM SUBMIT ───
-    document.getElementById('hackForm').addEventListener('submit', async (e) => {
+    // ── FORM SUBMIT ──
+    document.getElementById('hackForm').addEventListener('submit', async e => {
       e.preventDefault();
 
-      const get = name => document.querySelector(`[name="${name}"]`)?.value?.trim() || '';
-      const size = parseInt(get('team_size')) || 0;
+      if (!currentSize) { toast('Please select your team size first'); return; }
+      if (!val('team'))  { toast('Please enter your team name'); return; }
+      if (!val('college')) { toast('Please enter your college name'); return; }
+      if (!val('p1'))    { toast('Please enter Team Leader name'); return; }
+      if (!validPhone(val('p1_phone'))) { toast('Team Leader: Enter a valid 10-digit mobile starting with 6–9'); return; }
+      if (!validEmail(val('p1_email'))) { toast('Team Leader: Enter a valid email address'); return; }
+      if (!val('p1_food')) { toast('Team Leader: Please select food preference'); return; }
 
-      if (!size) { showToast('Please select your team size', 'error'); return; }
-      if (!validPhone(get('p1_phone'))) { showToast('Team Leader: Enter a valid 10-digit number starting with 6-9', 'error'); return; }
-      if (!get('p1_food')) { showToast('Team Leader: Please select food preference', 'error'); return; }
-
-      for (let i = 2; i <= size; i++) {
-        const name = get(`p${i}`);
-        if (name) {
-          const phone = get(`p${i}_phone`);
-          const email = get(`p${i}_email`);
-          if (!phone) { showToast(`Member ${i}: Please enter mobile number`, 'error'); return; }
-          if (!validPhone(phone)) { showToast(`Member ${i}: Invalid phone number`, 'error'); return; }
-          if (!email || !email.includes('@')) { showToast(`Member ${i}: Please enter a valid email`, 'error'); return; }
-          if (!get(`p${i}_food`)) { showToast(`Member ${i}: Please select food preference`, 'error'); return; }
-        }
+      // Validate each visible extra member
+      for (let i = 2; i <= currentSize; i++) {
+        const name = val(`p${i}`);
+        if (!name) { toast(`Member ${i}: Please enter full name`); return; }
+        if (!validPhone(val(`p${i}_phone`))) { toast(`Member ${i}: Invalid mobile number`); return; }
+        if (!validEmail(val(`p${i}_email`))) { toast(`Member ${i}: Invalid email address`); return; }
+        if (!val(`p${i}_food`)) { toast(`Member ${i}: Please select food preference`); return; }
       }
 
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
       btn.textContent = 'Submitting…';
 
-      const payload = {};
-      ['team','college','team_size','medical',
-       'p1','p1_phone','p1_email','p1_food',
-       'p2','p2_phone','p2_email','p2_food',
-       'p3','p3_phone','p3_email','p3_food',
-       'p4','p4_phone','p4_email','p4_food'
-      ].forEach(k => payload[k] = get(k));
+      const payload = {
+        team: val('team'), college: val('college'),
+        team_size: currentSize, medical: val('medical'),
+        p1: val('p1'), p1_phone: val('p1_phone'), p1_email: val('p1_email'), p1_food: val('p1_food'),
+        p2: val('p2'), p2_phone: val('p2_phone'), p2_email: val('p2_email'), p2_food: val('p2_food'),
+        p3: val('p3'), p3_phone: val('p3_phone'), p3_email: val('p3_email'), p3_food: val('p3_food'),
+        p4: val('p4'), p4_phone: val('p4_phone'), p4_email: val('p4_email'), p4_food: val('p4_food'),
+      };
 
       try {
         const res = await fetch('/api/register', {
@@ -575,50 +447,20 @@
           btn.disabled = false;
           btn.textContent = 'Submit Registration →';
           const msgs = {
-            duplicate: '⚠️ This phone number or email is already registered!',
-            invalid_phone: '⚠️ Invalid phone number! Must be 10 digits starting with 6-9.',
-            invalid_email: '⚠️ Invalid email address!',
+            duplicate: '⚠️ This phone or email is already registered!',
+            invalid_phone: '⚠️ Invalid phone number.',
+            invalid_email: '⚠️ Invalid email address.',
             missing_fields: '⚠️ Please fill all required fields.',
             server_error: '❌ Server error. Please try again.',
           };
-          showToast(msgs[data.error] || '❌ Something went wrong.', 'error');
+          toast(msgs[data.error] || '❌ Something went wrong. Please try again.');
         }
-      } catch (err) {
+      } catch {
         btn.disabled = false;
         btn.textContent = 'Submit Registration →';
-        showToast('❌ Network error. Please try again.', 'error');
+        toast('❌ Network error. Please try again.');
       }
     });
-
-    // ─── STEP HIGHLIGHT on scroll ───
-    const sections = document.querySelectorAll('.form-section');
-    const steps = document.querySelectorAll('.reg-step');
-    if (sections.length && steps.length) {
-      sections.forEach(s => {
-        new IntersectionObserver(entries => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              const idx = [...sections].indexOf(entry.target);
-              steps.forEach(st => st.classList.remove('active'));
-              if (steps[idx]) steps[idx].classList.add('active');
-            }
-          });
-        }, { threshold: 0.5 }).observe(s);
-      });
-    }
-
-    // ─── INPUT INTERACTIONS ───
-    document.querySelectorAll('input,textarea,select').forEach(el => {
-      el.addEventListener('focus', () => el.closest('.participant-card')?.classList.add('focused'));
-      el.addEventListener('blur',  () => el.closest('.participant-card')?.classList.remove('focused'));
-      if (el.type === 'tel') {
-        el.addEventListener('input', e => {
-          e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
-        });
-      }
-    });
-
-    document.addEventListener('DOMContentLoaded', updateParticipantFields);
   </script>
 </body>
 </html>
