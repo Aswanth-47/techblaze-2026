@@ -38,13 +38,23 @@ export default async function handler(req) {
   const q = url.searchParams.get('q') || '';
 
   try {
-    // Stats
+    // Stats — counts individual participants, not teams
     const statsRes = await sql`
       SELECT
         COUNT(*) as total_teams,
         COALESCE(SUM(team_size), 0) as total_members,
-        COUNT(*) FILTER (WHERE p1_food='Vegetarian' OR p2_food='Vegetarian' OR p3_food='Vegetarian' OR p4_food='Vegetarian') as veg,
-        COUNT(*) FILTER (WHERE p1_food='Non-Vegetarian' OR p2_food='Non-Vegetarian' OR p3_food='Non-Vegetarian' OR p4_food='Non-Vegetarian') as nonveg
+        COALESCE(SUM(
+          (CASE WHEN p1_food='Vegetarian' THEN 1 ELSE 0 END) +
+          (CASE WHEN p2_food='Vegetarian' THEN 1 ELSE 0 END) +
+          (CASE WHEN p3_food='Vegetarian' THEN 1 ELSE 0 END) +
+          (CASE WHEN p4_food='Vegetarian' THEN 1 ELSE 0 END)
+        ), 0) as veg,
+        COALESCE(SUM(
+          (CASE WHEN p1_food='Non-Vegetarian' THEN 1 ELSE 0 END) +
+          (CASE WHEN p2_food='Non-Vegetarian' THEN 1 ELSE 0 END) +
+          (CASE WHEN p3_food='Non-Vegetarian' THEN 1 ELSE 0 END) +
+          (CASE WHEN p4_food='Non-Vegetarian' THEN 1 ELSE 0 END)
+        ), 0) as nonveg
       FROM registrations
     `;
     const stats = statsRes[0];
