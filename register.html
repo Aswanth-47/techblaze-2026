@@ -5,505 +5,929 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register — Tech Blaze 3.0 Hackathon</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;700&display=swap">
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
-    /* ── FIX: Force hide optional members by default ── */
-    .optional-member {
-      display: none !important;
+    /* ═══ ROOT / RESET ═══ */
+    :root {
+      --fire: #ff4500;
+      --fire2: #ff8c00;
+      --ember: #ffd700;
+      --dark: #060402;
+      --surface: #0d0a06;
+      --surface2: #110d07;
+      --muted: #6b5a3e;
+      --text: #f0e6d3;
+      --border: rgba(255,140,0,0.12);
+      --border2: rgba(255,140,0,0.18);
     }
-    .optional-member.show {
-      display: block !important;
-      animation: slideIn .4s ease forwards;
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      overflow-x: hidden;
+      min-height: 100vh;
     }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
+    @media (hover:hover) and (pointer:fine) { body { cursor: none; } }
+
+    /* ═══ CUSTOM CURSOR ═══ */
+    .cursor-dot, .cursor-ring {
+      display: none; position: fixed; border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%); will-change: left,top;
+    }
+    @media (hover:hover) and (pointer:fine) {
+      .cursor-dot {
+        display: block; width: 9px; height: 9px;
+        background: var(--fire); box-shadow: 0 0 10px rgba(255,69,0,.5);
+        transition: width .15s, height .15s, background .15s;
+      }
+      .cursor-ring {
+        display: block; width: 32px; height: 32px;
+        border: 1.5px solid rgba(255,69,0,.4); z-index: 9998;
+        transition: width .25s, height .25s, border-color .25s;
+      }
+      .cursor-dot.hov { width: 16px; height: 16px; background: var(--ember); }
+      .cursor-ring.hov { width: 48px; height: 48px; border-color: rgba(255,200,0,.65); }
     }
 
-    /* ── TEAM SIZE PILLS ── */
-    .size-pills {
-      display: flex; gap: 10px;
+    /* ═══ LOADER ═══ */
+    #loader {
+      position: fixed; inset: 0; z-index: 99999;
+      background: var(--dark); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; transition: opacity .7s ease;
     }
-    .sz-pill {
-      width: 54px; height: 54px;
-      display: flex; align-items: center; justify-content: center;
+    #loader.done { opacity: 0; pointer-events: none; }
+    .loader-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(40px,9vw,90px);
+      background: linear-gradient(90deg, var(--fire), var(--fire2), var(--ember));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      letter-spacing: .05em;
+    }
+    .loader-bar-wrap {
+      width: min(320px,78vw); height: 3px;
+      background: rgba(255,255,255,.06); border-radius: 100px; margin-top: 24px; overflow: hidden;
+    }
+    .loader-bar {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--fire), var(--ember));
+      border-radius: 100px; transition: width .08s linear;
+    }
+    .loader-pct {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      color: var(--muted); margin-top: 10px; letter-spacing: .2em;
+    }
+
+    /* ═══ CANVAS ═══ */
+    #mainCanvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+
+    /* ═══ LAYOUT ═══ */
+    .reg-page {
+      position: relative; z-index: 5;
+      display: grid; grid-template-columns: 380px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ═══ SIDEBAR ═══ */
+    .reg-sidebar {
+      position: sticky; top: 0; height: 100vh;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 48px 36px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      overflow: hidden;
+    }
+    .reg-sidebar::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 120% 60% at 20% 10%, rgba(255,69,0,0.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .reg-sidebar::after {
+      content: '⚡';
+      position: absolute; right: -20px; bottom: -40px;
+      font-size: 220px; opacity: .025; pointer-events: none; line-height: 1;
+    }
+
+    .sidebar-brand {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 40px;
+      opacity: 0; animation: fadeUp .6s .1s forwards;
+    }
+    .sidebar-logo-box {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--fire), var(--fire2));
+      border-radius: 9px; display: grid; place-items: center;
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: #fff;
+      box-shadow: 0 0 18px rgba(255,69,0,.35); flex-shrink: 0;
+    }
+    .sidebar-brand-name {
+      font-size: 12px; font-weight: 600; color: var(--text); letter-spacing: .03em;
+    }
+
+    .reg-sidebar-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 5.5vw, 80px);
+      line-height: .9; letter-spacing: .01em; margin-bottom: 16px;
+      color: var(--text);
+      opacity: 0; animation: fadeUp .7s .2s forwards;
+    }
+    .reg-sidebar-title .grad {
+      background: linear-gradient(90deg, var(--fire), var(--fire2), var(--ember));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      background-size: 200% auto; animation: gradShift 4s 1s linear infinite;
+    }
+    @keyframes gradShift { 0%{background-position:0%} 100%{background-position:200%} }
+
+    .reg-sidebar-sub {
+      font-size: 13px; color: var(--muted); line-height: 1.8; margin-bottom: 40px;
+      opacity: 0; animation: fadeUp .6s .35s forwards;
+    }
+
+    /* STEPS */
+    .reg-steps {
+      display: flex; flex-direction: column; gap: 6px;
+      opacity: 0; animation: fadeUp .6s .45s forwards;
+    }
+    .reg-step {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; border-radius: 12px;
+      border: 1px solid transparent;
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      transition: all .3s; cursor: default;
+    }
+    .reg-step.active {
+      background: rgba(255,69,0,0.08);
+      border-color: rgba(255,69,0,0.2);
+      color: var(--text);
+    }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      display: grid; place-items: center;
+      font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
+      color: var(--muted); transition: all .3s;
+    }
+    .reg-step.active .step-num {
+      background: rgba(255,69,0,0.15); border-color: rgba(255,69,0,0.35); color: var(--fire2);
+    }
+    .reg-step.done .step-num { background: rgba(255,140,0,0.12); border-color: rgba(255,140,0,0.3); color: var(--fire2); }
+    .reg-step.done { color: rgba(240,230,211,.55); }
+
+    /* Sidebar event info pills */
+    .sidebar-info-pills {
+      display: flex; flex-direction: column; gap: 8px; margin-top: 28px;
+      opacity: 0; animation: fadeUp .6s .55s forwards;
+    }
+    .sip {
+      display: flex; align-items: center; gap: 9px;
+      padding: 9px 12px; border-radius: 10px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      font-size: 12px; color: rgba(240,230,211,0.55);
+      transition: border-color .2s, background .2s;
+    }
+    .sip:hover { border-color: var(--border2); background: rgba(255,140,0,0.04); }
+    .sip-icon { font-size: 14px; flex-shrink: 0; }
+
+    .sidebar-footer {
+      font-family: 'JetBrains Mono', monospace; font-size: 10px;
+      color: var(--muted); letter-spacing: .05em; line-height: 1.7;
+      opacity: 0; animation: fadeUp .6s .65s forwards;
+    }
+
+    /* ═══ MAIN ═══ */
+    .reg-main {
+      padding: 56px 64px 80px;
+      position: relative;
+    }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      padding: 8px 14px 8px 10px;
+      border: 1px solid var(--border); border-radius: 9px;
+      background: rgba(255,255,255,0.03);
+      transition: all .22s; margin-bottom: 32px; display: inline-flex;
+      opacity: 0; animation: fadeUp .5s .1s forwards;
+    }
+    .back-btn:hover { color: var(--fire2); border-color: rgba(255,140,0,0.3); background: rgba(255,140,0,0.06); transform: translateX(-2px); }
+    .back-btn svg { width: 14px; height: 14px; stroke: currentColor; flex-shrink: 0; transition: transform .22s; }
+    .back-btn:hover svg { transform: translateX(-2px); }
+
+    .reg-main-header {
+      margin-bottom: 36px;
+      opacity: 0; animation: fadeUp .6s .2s forwards;
+    }
+    .reg-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'JetBrains Mono', monospace; font-size: 10px;
+      color: var(--fire2); letter-spacing: .14em; text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .live-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #22dd44;
+      box-shadow: 0 0 8px #22dd44; animation: liveBlink 2s step-end infinite; flex-shrink: 0;
+    }
+    @keyframes liveBlink { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .reg-main-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(38px,4.5vw,64px); line-height: 1;
+      color: var(--text); margin-bottom: 6px;
+    }
+    .reg-main-sub {
+      font-size: 13px; color: var(--muted);
+    }
+    .asterisk { color: var(--fire); }
+
+    /* ═══ FORM SECTIONS ═══ */
+    .form-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px; padding: 32px;
+      margin-bottom: 20px; position: relative; overflow: hidden;
+      opacity: 0; animation: fadeUp .6s forwards;
+    }
+    .form-section:nth-child(1) { animation-delay: .3s; }
+    .form-section:nth-child(2) { animation-delay: .4s; }
+    .form-section:nth-child(3) { animation-delay: .5s; }
+    .form-section::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--fire), var(--fire2), var(--ember));
+    }
+
+    .form-section-title {
+      font-family: 'JetBrains Mono', monospace; font-size: 10px;
+      color: var(--fire2); letter-spacing: .14em; text-transform: uppercase;
+      margin-bottom: 24px; display: flex; align-items: center; gap: 10px;
+    }
+    .form-section-title::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+    .form-row:last-of-type { margin-bottom: 0; }
+    .form-group { display: flex; flex-direction: column; gap: 7px; }
+    .form-group.full { grid-column: 1 / -1; }
+
+    label {
+      font-family: 'JetBrains Mono', monospace; font-size: 10px;
+      font-weight: 700; color: var(--muted); letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    input, select, textarea {
+      width: 100%; padding: 12px 16px;
       background: rgba(255,255,255,0.04);
-      border: 1.5px solid rgba(255,255,255,0.1);
-      border-radius: 12px; font-family: 'Syne', sans-serif;
-      font-size: 20px; font-weight: 700;
-      color: rgba(255,255,255,0.35);
-      cursor: pointer; transition: all .25s;
-      user-select: none;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 11px; color: var(--text); font-family: 'Syne', sans-serif;
+      font-size: 14px; outline: none;
+      transition: border-color .25s, background .25s, box-shadow .25s;
+      -webkit-appearance: none; appearance: none;
     }
-    .sz-pill:hover { border-color: rgba(99,179,237,0.4); color: #fff; background: rgba(99,179,237,0.07); }
-    .sz-pill.active { border-color: #63b3ed; background: rgba(99,179,237,0.16); color: #fff; box-shadow: 0 0 18px rgba(99,179,237,0.25); }
+    input::placeholder, textarea::placeholder { color: rgba(240,230,211,0.2); }
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(255,140,0,0.4);
+      background: rgba(255,140,0,0.04);
+      box-shadow: 0 0 0 3px rgba(255,140,0,0.08);
+    }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b5a3e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 14px center;
+      padding-right: 36px; cursor: pointer;
+    }
+    select option { background: #1a1208; color: var(--text); }
+    textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
 
-    /* Hide the real select; drive via JS */
+    /* ═══ SIZE PILLS ═══ */
+    .size-pills { display: flex; gap: 10px; }
+    .sz-pill {
+      width: 54px; height: 54px; display: grid; place-items: center;
+      background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.09);
+      border-radius: 12px; font-family: 'Bebas Neue', sans-serif; font-size: 24px;
+      color: rgba(240,230,211,0.3); cursor: pointer;
+      transition: all .25s; user-select: none;
+    }
+    .sz-pill:hover { border-color: rgba(255,140,0,0.4); color: var(--text); background: rgba(255,140,0,0.07); }
+    .sz-pill.active {
+      border-color: var(--fire2); background: rgba(255,140,0,0.14);
+      color: var(--text); box-shadow: 0 0 20px rgba(255,140,0,0.22);
+    }
     #team_size { display: none; }
 
-    /* ── MEMBER PROGRESS DOTS ── */
-    .member-dots {
-      display: flex; gap: 7px; margin-bottom: 22px;
-    }
+    /* ═══ MEMBER PROGRESS ═══ */
+    .member-dots { display: flex; gap: 7px; margin-bottom: 24px; }
     .mdot {
-      height: 4px; flex: 1; border-radius: 2px;
-      background: rgba(255,255,255,0.07);
-      transition: background .35s;
+      height: 3px; flex: 1; border-radius: 2px;
+      background: rgba(255,255,255,0.07); transition: background .35s;
     }
-    .mdot.on { background: #63b3ed; }
+    .mdot.on { background: linear-gradient(90deg, var(--fire), var(--fire2)); }
 
-    /* ── PARTICIPANT CARD HEADER ── */
+    /* ═══ PARTICIPANT CARD ═══ */
+    .optional-member { display: none !important; }
+    .optional-member.show { display: block !important; animation: slideIn .4s ease forwards; }
+    @keyframes slideIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+    .participant-card {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; padding: 22px; margin-bottom: 14px;
+      transition: border-color .3s;
+    }
+    .participant-card:last-child { margin-bottom: 0; }
+    .participant-card.focused { border-color: rgba(255,140,0,0.25); }
+    .participant-card:hover { border-color: rgba(255,255,255,0.1); }
+
     .participant-label {
-      display: flex; align-items: center; gap: 10px;
+      display: flex; align-items: center; gap: 9px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.4);
-      letter-spacing: 0.08em; text-transform: uppercase;
+      font-size: 10px; font-weight: 700;
+      color: var(--muted); letter-spacing: .08em; text-transform: uppercase;
       margin-bottom: 18px; padding-bottom: 14px;
       border-bottom: 1px solid rgba(255,255,255,0.06);
     }
     .p-num {
-      width: 26px; height: 26px; border-radius: 6px;
-      background: rgba(99,179,237,0.15); border: 1px solid rgba(99,179,237,0.3);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px; font-weight: 700; color: #63b3ed; flex-shrink: 0;
+      width: 26px; height: 26px; border-radius: 7px;
+      background: rgba(255,140,0,0.1); border: 1px solid rgba(255,140,0,0.25);
+      display: grid; place-items: center;
+      font-size: 12px; font-weight: 700; color: var(--fire2); flex-shrink: 0;
     }
-    .p-leader { background: rgba(99,179,237,0.12); border: 1px solid rgba(99,179,237,0.25); color: #63b3ed; border-radius: 4px; font-size: 10px; padding: 2px 8px; }
-    .p-required { background: rgba(239,83,80,0.12); border: 1px solid rgba(239,83,80,0.2); color: #ef5350; border-radius: 4px; font-size: 10px; padding: 2px 8px; }
-    .p-optional  { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); border-radius: 4px; font-size: 10px; padding: 2px 8px; }
+    .p-badge {
+      padding: 2px 9px; border-radius: 5px; font-size: 10px; letter-spacing: .05em;
+    }
+    .p-leader { background: rgba(255,140,0,0.12); border: 1px solid rgba(255,140,0,0.25); color: var(--fire2); }
+    .p-required { background: rgba(255,69,0,0.1); border: 1px solid rgba(255,69,0,0.2); color: var(--fire); }
+    .p-optional { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: rgba(240,230,211,.35); }
 
-    /* ── BACK TO HOME BUTTON ── */
-    .back-home-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.45);
-      text-decoration: none;
-      padding: 8px 14px 8px 10px;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 8px;
-      background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(8px);
-      transition: all .22s ease;
-      margin-bottom: 28px;
-      align-self: flex-start;
+    /* ═══ SUBMIT BUTTON ═══ */
+    .btn-submit {
+      width: 100%; padding: 18px 32px; margin-top: 8px;
+      background: linear-gradient(135deg, var(--fire), var(--fire2));
+      color: #fff; border: none; border-radius: 14px;
+      font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: .08em;
+      cursor: pointer; position: relative; overflow: hidden;
+      box-shadow: 0 8px 32px rgba(255,69,0,0.35);
+      transition: transform .2s, box-shadow .2s;
+      opacity: 0; animation: fadeUp .6s .6s forwards;
     }
-    .back-home-btn:hover {
-      color: #63b3ed;
-      border-color: rgba(99,179,237,0.35);
-      background: rgba(99,179,237,0.07);
-      transform: translateX(-2px);
+    .btn-submit::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.1) 100%);
     }
-    .back-home-btn svg {
-      width: 14px; height: 14px;
-      stroke: currentColor;
-      transition: transform .22s ease;
-      flex-shrink: 0;
+    .btn-submit::after {
+      content: ''; position: absolute;
+      top: -50%; left: -60%; width: 40%; height: 200%;
+      background: rgba(255,255,255,0.12); transform: skewX(-20deg);
+      transition: left .5s ease;
     }
-    .back-home-btn:hover svg {
-      transform: translateX(-2px);
+    .btn-submit:hover::after { left: 130%; }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 14px 44px rgba(255,69,0,.5); }
+    .btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    .form-note {
+      text-align: center; font-size: 12px; color: var(--muted);
+      margin-top: 14px; letter-spacing: .02em;
+      opacity: 0; animation: fadeUp .5s .7s forwards;
     }
-    /* Wrap the main content so the button sits above the header */
-    .reg-main-inner {
-      display: flex;
-      flex-direction: column;
+
+    /* ═══ TOAST ═══ */
+    .toast {
+      position: fixed; bottom: 28px; right: 28px;
+      padding: 16px 22px; border-radius: 13px;
+      font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600;
+      color: #fff; z-index: 9999; max-width: 380px;
+      animation: toastIn .3s ease;
+    }
+    @keyframes toastIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    .toast.error   { background: rgba(255,69,0,0.95); border: 1px solid rgba(255,69,0,0.4); box-shadow: 0 8px 32px rgba(255,69,0,0.4); }
+    .toast.success { background: rgba(34,200,90,0.95); border: 1px solid rgba(34,200,90,0.4); box-shadow: 0 8px 32px rgba(34,200,90,0.3); }
+
+    /* ═══ ANIMATIONS ═══ */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 1100px) {
+      .reg-page { grid-template-columns: 300px 1fr; }
+      .reg-main { padding: 40px 36px 64px; }
+    }
+    @media (max-width: 800px) {
+      .reg-page { grid-template-columns: 1fr; }
+      .reg-sidebar {
+        position: static; height: auto; padding: 28px 20px;
+        border-right: none; border-bottom: 1px solid var(--border);
+      }
+      .reg-sidebar-title { font-size: 52px; }
+      .reg-steps { flex-direction: row; flex-wrap: wrap; }
+      .reg-step { flex: 1; min-width: 120px; font-size: 11px; }
+      .sidebar-info-pills { flex-direction: row; flex-wrap: wrap; }
+      .sip { flex: 1; min-width: 150px; font-size: 11px; }
+      .reg-main { padding: 28px 18px 60px; }
+      .form-row { grid-template-columns: 1fr; }
+      .form-group.full { grid-column: 1; }
+      .size-pills { gap: 8px; }
+      .sz-pill { width: 48px; height: 48px; font-size: 20px; }
+    }
+    @media (max-width: 480px) {
+      .reg-steps { flex-direction: column; }
+      .sip { min-width: 100%; }
     }
   </style>
 </head>
 <body>
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
 
-  <div class="reg-page">
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-text" id="loaderText">LOADING</div>
+  <div class="loader-bar-wrap"><div class="loader-bar" id="loaderBar"></div></div>
+  <div class="loader-pct" id="loaderPct">0%</div>
+</div>
 
-    <!-- Sidebar -->
-    <aside class="reg-sidebar">
-      <div>
-        <div class="reg-sidebar-logo">
-          <div class="sidebar-logo-box">CT</div>
-          <span class="sidebar-brand-name">Computer Engineering</span>
+<!-- CURSOR -->
+<div class="cursor-dot" id="curDot"></div>
+<div class="cursor-ring" id="curRing"></div>
+
+<!-- CANVAS PARTICLES -->
+<canvas id="mainCanvas"></canvas>
+
+<div class="reg-page">
+
+  <!-- ══════════════ SIDEBAR ══════════════ -->
+  <aside class="reg-sidebar">
+    <div>
+      <div class="sidebar-brand">
+        <div class="sidebar-logo-box">CT</div>
+        <span class="sidebar-brand-name">Computer Engineering</span>
+      </div>
+
+      <h1 class="reg-sidebar-title">Tech<br>Blaze<br><span class="grad">3.0</span></h1>
+
+      <p class="reg-sidebar-sub">
+        Register your team and secure your spot at the biggest hackathon of the year. Teams of up to 4 members welcome.
+      </p>
+
+      <div class="reg-steps">
+        <div class="reg-step active" id="si1">
+          <div class="step-num">1</div>Team Details
         </div>
-        <h1 class="reg-sidebar-title">Tech Blaze<br><span class="grad">3.0</span></h1>
-        <p class="reg-sidebar-sub">
-          Register your team and secure your spot at the biggest hackathon of the year. Teams of up to 4 members welcome.
-        </p>
-        <div class="reg-steps">
-          <div class="reg-step active" id="si1"><div class="step-num">1</div>Team Information</div>
-          <div class="reg-step" id="si2"><div class="step-num">2</div>Team Members</div>
-          <div class="reg-step" id="si3"><div class="step-num">3</div>Health & Preferences</div>
+        <div class="reg-step" id="si2">
+          <div class="step-num">2</div>Team Members
+        </div>
+        <div class="reg-step" id="si3">
+          <div class="step-num">3</div>Health & Prefs
         </div>
       </div>
-      <div class="sidebar-footer">
-        <p>Questions? Reach out to the organising team.</p>
-        <p style="margin-top:4px">© 2026 CE Department</p>
+
+      <div class="sidebar-info-pills">
+        <div class="sip"><span class="sip-icon">📅</span> 25 Feb 2026</div>
+        <div class="sip"><span class="sip-icon">🕗</span> 8 PM → 8 AM</div>
+        <div class="sip"><span class="sip-icon">📍</span> JDT Islam Polytechnic Conference Hall</div>
+        <div class="sip"><span class="sip-icon">🏆</span> ₹10,000 Prize Pool</div>
+        <div class="sip"><span class="sip-icon">💰</span> ₹250 / person entry fee</div>
       </div>
-    </aside>
+    </div>
 
-    <!-- Main -->
-    <main class="reg-main">
-      <div class="reg-main-inner">
+    <div class="sidebar-footer">
+      <p>Questions? Reach out to the organising team.</p>
+      <p style="margin-top:4px">© 2026 CE Department · Tech Blaze 3.0</p>
+    </div>
+  </aside>
 
-        <!-- ── BACK TO HOME ── -->
-        <a href="index.html" class="back-home-btn fade-up fade-up-1" aria-label="Back to home">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 12H5M5 12l7-7M5 12l7 7"/>
-          </svg>
-          Back to Home
-        </a>
+  <!-- ══════════════ MAIN ══════════════ -->
+  <main class="reg-main">
 
-        <div class="reg-main-header fade-up fade-up-1">
-          <h2 class="reg-main-title">Team Registration</h2>
-          <p class="reg-main-sub">Fields marked with <span class="asterisk">*</span> are required</p>
+    <a href="index.html" class="back-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M5 12l7-7M5 12l7 7"/>
+      </svg>
+      Back to Home
+    </a>
+
+    <div class="reg-main-header">
+      <div class="reg-eyebrow">
+        <span class="live-dot"></span>
+        Applications Open · 2026
+      </div>
+      <h2 class="reg-main-title">Team Registration</h2>
+      <p class="reg-main-sub">Fields marked with <span class="asterisk">*</span> are required</p>
+    </div>
+
+    <form id="hackForm" novalidate>
+
+      <!-- ── STEP 1: TEAM DETAILS ── -->
+      <div class="form-section" id="fs1">
+        <div class="form-section-title">Step 1 — Team Details</div>
+
+        <div class="form-row">
+          <div class="form-group full">
+            <label>Team Name *</label>
+            <input id="team" name="team" type="text"
+              placeholder="e.g. ByteForce, NullPointers, CodeNinjas…"
+              required autocomplete="off">
+          </div>
         </div>
 
-        <form id="hackForm" class="fade-up fade-up-2" novalidate>
-
-          <!-- STEP 1 -->
-          <div class="form-section" id="fs1">
-            <div class="form-section-title">Step 1 — Team Details</div>
-            <div class="form-row">
-              <div class="form-group full">
-                <label>Team Name *</label>
-                <input id="team" name="team" type="text" placeholder="e.g. ByteForce, NullPointers, CodeNinjas…" required autocomplete="off">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>College / Institution *</label>
-                <input id="college" name="college" type="text" placeholder="Your college name" required autocomplete="off">
-              </div>
-              <div class="form-group">
-                <label>Team Size *</label>
-                <div class="size-pills">
-                  <div class="sz-pill" data-n="1" onclick="setSize(1)">1</div>
-                  <div class="sz-pill" data-n="2" onclick="setSize(2)">2</div>
-                  <div class="sz-pill" data-n="3" onclick="setSize(3)">3</div>
-                  <div class="sz-pill" data-n="4" onclick="setSize(4)">4</div>
-                </div>
-                <select id="team_size" name="team_size" required>
-                  <option value="">Select</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                </select>
-              </div>
-            </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>College / Institution *</label>
+            <input id="college" name="college" type="text"
+              placeholder="Your college name" required autocomplete="off">
           </div>
-
-          <!-- STEP 2 -->
-          <div class="form-section" id="fs2">
-            <div class="form-section-title">Step 2 — Team Members</div>
-
-            <!-- Member progress bar -->
-            <div class="member-dots">
-              <div class="mdot on" id="md1"></div>
-              <div class="mdot" id="md2"></div>
-              <div class="mdot" id="md3"></div>
-              <div class="mdot" id="md4"></div>
+          <div class="form-group">
+            <label>Team Size *</label>
+            <div class="size-pills">
+              <div class="sz-pill" data-n="1" onclick="setSize(1)">1</div>
+              <div class="sz-pill" data-n="2" onclick="setSize(2)">2</div>
+              <div class="sz-pill" data-n="3" onclick="setSize(3)">3</div>
+              <div class="sz-pill" data-n="4" onclick="setSize(4)">4</div>
             </div>
-
-            <!-- P1 — always visible -->
-            <div class="participant-card required-member">
-              <div class="participant-label">
-                <div class="p-num">1</div>
-                Team Leader
-                <span class="p-leader">Leader</span>
-                <span class="p-required">Required</span>
-              </div>
-              <div class="form-row">
-                <div class="form-group full">
-                  <label>Full Name *</label>
-                  <input name="p1" type="text" placeholder="Full name" required autocomplete="off">
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Mobile Number *</label>
-                  <input name="p1_phone" type="tel" placeholder="10-digit" pattern="[6-9]\d{9}" required maxlength="10" inputmode="numeric">
-                </div>
-                <div class="form-group">
-                  <label>Email Address *</label>
-                  <input name="p1_email" type="email" placeholder="leader@email.com" required autocomplete="off">
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Food Preference *</label>
-                  <select name="p1_food" required>
-                    <option value="">Select option</option>
-                    <option value="Vegetarian">🥦 Vegetarian</option>
-                    <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <!-- P2 -->
-            <div class="participant-card optional-member" id="p2c">
-              <div class="participant-label">
-                <div class="p-num">2</div>
-                Member 2
-                <span class="p-optional">Optional</span>
-              </div>
-              <div class="form-row">
-                <div class="form-group full">
-                  <label>Full Name</label>
-                  <input name="p2" type="text" placeholder="Full name" autocomplete="off">
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Mobile Number</label>
-                  <input name="p2_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10" inputmode="numeric">
-                </div>
-                <div class="form-group">
-                  <label>Email Address</label>
-                  <input name="p2_email" type="email" placeholder="member2@email.com" autocomplete="off">
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Food Preference</label>
-                  <select name="p2_food">
-                    <option value="">Select option</option>
-                    <option value="Vegetarian">🥦 Vegetarian</option>
-                    <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <!-- P3 -->
-            <div class="participant-card optional-member" id="p3c">
-              <div class="participant-label">
-                <div class="p-num">3</div>
-                Member 3
-                <span class="p-optional">Optional</span>
-              </div>
-              <div class="form-row">
-                <div class="form-group full">
-                  <label>Full Name</label>
-                  <input name="p3" type="text" placeholder="Full name" autocomplete="off">
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Mobile Number</label>
-                  <input name="p3_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10" inputmode="numeric">
-                </div>
-                <div class="form-group">
-                  <label>Email Address</label>
-                  <input name="p3_email" type="email" placeholder="member3@email.com" autocomplete="off">
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Food Preference</label>
-                  <select name="p3_food">
-                    <option value="">Select option</option>
-                    <option value="Vegetarian">🥦 Vegetarian</option>
-                    <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <!-- P4 -->
-            <div class="participant-card optional-member" id="p4c">
-              <div class="participant-label">
-                <div class="p-num">4</div>
-                Member 4
-                <span class="p-optional">Optional</span>
-              </div>
-              <div class="form-row">
-                <div class="form-group full">
-                  <label>Full Name</label>
-                  <input name="p4" type="text" placeholder="Full name" autocomplete="off">
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Mobile Number</label>
-                  <input name="p4_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10" inputmode="numeric">
-                </div>
-                <div class="form-group">
-                  <label>Email Address</label>
-                  <input name="p4_email" type="email" placeholder="member4@email.com" autocomplete="off">
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Food Preference</label>
-                  <select name="p4_food">
-                    <option value="">Select option</option>
-                    <option value="Vegetarian">🥦 Vegetarian</option>
-                    <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+            <select id="team_size" name="team_size" required>
+              <option value="">Select</option>
+              <option value="1">1</option><option value="2">2</option>
+              <option value="3">3</option><option value="4">4</option>
+            </select>
           </div>
+        </div>
+      </div>
 
-          <!-- STEP 3 -->
-          <div class="form-section" id="fs3">
-            <div class="form-section-title">Step 3 — Health & Accessibility</div>
+      <!-- ── STEP 2: MEMBERS ── -->
+      <div class="form-section" id="fs2">
+        <div class="form-section-title">Step 2 — Team Members</div>
+
+        <div class="member-dots">
+          <div class="mdot on" id="md1"></div>
+          <div class="mdot" id="md2"></div>
+          <div class="mdot" id="md3"></div>
+          <div class="mdot" id="md4"></div>
+        </div>
+
+        <!-- P1 Leader -->
+        <div class="participant-card required-member">
+          <div class="participant-label">
+            <div class="p-num">1</div>
+            Team Leader
+            <span class="p-badge p-leader">Leader</span>
+            <span class="p-badge p-required">Required</span>
+          </div>
+          <div class="form-row">
             <div class="form-group full">
-              <label for="medical">Medical Conditions or Accessibility Needs</label>
-              <textarea id="medical" name="medical" rows="4" placeholder="Let us know if any team member has allergies, medical conditions, or accessibility requirements…"></textarea>
+              <label>Full Name *</label>
+              <input name="p1" type="text" placeholder="Full name" required autocomplete="off">
             </div>
           </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Mobile Number *</label>
+              <input name="p1_phone" type="tel" placeholder="10-digit mobile"
+                pattern="[6-9]\d{9}" required maxlength="10" inputmode="numeric">
+            </div>
+            <div class="form-group">
+              <label>Email Address *</label>
+              <input name="p1_email" type="email" placeholder="leader@email.com" required autocomplete="off">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Food Preference *</label>
+              <select name="p1_food" required>
+                <option value="">Select option</option>
+                <option value="Vegetarian">🥦 Vegetarian</option>
+                <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
-          <button type="submit" class="btn-submit" id="submitBtn">Submit Registration →</button>
-          <p class="form-note">By submitting, you agree to the event terms & code of conduct.</p>
-        </form>
+        <!-- P2 -->
+        <div class="participant-card optional-member" id="p2c">
+          <div class="participant-label">
+            <div class="p-num">2</div>Member 2
+            <span class="p-badge p-optional">Optional</span>
+          </div>
+          <div class="form-row">
+            <div class="form-group full">
+              <label>Full Name</label>
+              <input name="p2" type="text" placeholder="Full name" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Mobile Number</label>
+              <input name="p2_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10" inputmode="numeric">
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input name="p2_email" type="email" placeholder="member2@email.com" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Food Preference</label>
+              <select name="p2_food">
+                <option value="">Select option</option>
+                <option value="Vegetarian">🥦 Vegetarian</option>
+                <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
-      </div><!-- /.reg-main-inner -->
-    </main>
-  </div>
+        <!-- P3 -->
+        <div class="participant-card optional-member" id="p3c">
+          <div class="participant-label">
+            <div class="p-num">3</div>Member 3
+            <span class="p-badge p-optional">Optional</span>
+          </div>
+          <div class="form-row">
+            <div class="form-group full">
+              <label>Full Name</label>
+              <input name="p3" type="text" placeholder="Full name" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Mobile Number</label>
+              <input name="p3_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10" inputmode="numeric">
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input name="p3_email" type="email" placeholder="member3@email.com" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Food Preference</label>
+              <select name="p3_food">
+                <option value="">Select option</option>
+                <option value="Vegetarian">🥦 Vegetarian</option>
+                <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
-  <script>
-    window.scrollTo(0, 0);
-    setTimeout(() => document.documentElement.classList.add('loaded'), 100);
+        <!-- P4 -->
+        <div class="participant-card optional-member" id="p4c">
+          <div class="participant-label">
+            <div class="p-num">4</div>Member 4
+            <span class="p-badge p-optional">Optional</span>
+          </div>
+          <div class="form-row">
+            <div class="form-group full">
+              <label>Full Name</label>
+              <input name="p4" type="text" placeholder="Full name" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Mobile Number</label>
+              <input name="p4_phone" type="tel" placeholder="10-digit mobile" pattern="[6-9]\d{9}" maxlength="10" inputmode="numeric">
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input name="p4_email" type="email" placeholder="member4@email.com" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Food Preference</label>
+              <select name="p4_food">
+                <option value="">Select option</option>
+                <option value="Vegetarian">🥦 Vegetarian</option>
+                <option value="Non-Vegetarian">🍗 Non-Vegetarian</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    // ── TEAM SIZE PILL SELECTOR ──
-    let currentSize = 0;
+      <!-- ── STEP 3: HEALTH ── -->
+      <div class="form-section" id="fs3">
+        <div class="form-section-title">Step 3 — Health &amp; Accessibility</div>
+        <div class="form-group full">
+          <label for="medical">Medical Conditions or Accessibility Needs</label>
+          <textarea id="medical" name="medical" rows="4"
+            placeholder="Let us know if any team member has allergies, medical conditions, or accessibility requirements…"></textarea>
+        </div>
+      </div>
 
-    function setSize(n) {
-      currentSize = n;
-      document.getElementById('team_size').value = n;
-      document.querySelectorAll('.sz-pill').forEach(p => {
-        p.classList.toggle('active', parseInt(p.dataset.n) === n);
-      });
-      const cards = { p2c: 2, p3c: 3, p4c: 4 };
-      Object.entries(cards).forEach(([id, minSize]) => {
-        const card = document.getElementById(id);
-        if (n >= minSize) {
-          card.classList.add('show');
-        } else {
-          card.classList.remove('show');
-          card.querySelectorAll('input, select').forEach(f => f.value = '');
+      <button type="submit" class="btn-submit" id="submitBtn">
+        Submit Registration →
+      </button>
+      <p class="form-note">By submitting, you agree to the event terms &amp; code of conduct.</p>
+
+    </form>
+  </main>
+</div>
+
+<script>
+  window.scrollTo(0, 0);
+
+  // ── LOADER ──
+  const LS = ['LOADING','PREPARING','ALMOST THERE','LET\'S GO'];
+  let li2 = 0, pr = 0;
+  const lEl = document.getElementById('loader'),
+        lBar = document.getElementById('loaderBar'),
+        lPct = document.getElementById('loaderPct'),
+        lTxt = document.getElementById('loaderText');
+  const lInt = setInterval(() => {
+    pr += Math.random() * 7 + 2; if (pr > 100) pr = 100;
+    lBar.style.width = pr + '%'; lPct.textContent = Math.floor(pr) + '%';
+    if (pr > 30 && li2 === 0) { li2 = 1; lTxt.textContent = LS[1]; }
+    if (pr > 60 && li2 === 1) { li2 = 2; lTxt.textContent = LS[2]; }
+    if (pr > 85 && li2 === 2) { li2 = 3; lTxt.textContent = LS[3]; }
+    if (pr >= 100) {
+      clearInterval(lInt);
+      setTimeout(() => lEl.classList.add('done'), 250);
+      setTimeout(() => lEl.style.display = 'none', 900);
+    }
+  }, 32);
+
+  // ── CURSOR ──
+  const isMouse = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  if (isMouse) {
+    const dot = document.getElementById('curDot'), ring = document.getElementById('curRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; }, { passive: true });
+    (function cTick() {
+      dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+      rx += (mx - rx) * .13; ry += (my - ry) * .13;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(cTick);
+    })();
+    document.querySelectorAll('a,button,.sz-pill').forEach(el => {
+      el.addEventListener('mouseenter', () => { dot.classList.add('hov'); ring.classList.add('hov'); });
+      el.addEventListener('mouseleave', () => { dot.classList.remove('hov'); ring.classList.remove('hov'); });
+    });
+  }
+
+  // ── PARTICLE CANVAS ──
+  const cv = document.getElementById('mainCanvas');
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0;
+  const particles = [];
+  function mkP() {
+    return {
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35,
+      r: Math.random() * 1.4 + .6,
+      col: Math.random() < .6 ? 'rgba(255,140,0,' : Math.random() < .5 ? 'rgba(255,69,0,' : 'rgba(255,215,0,'
+    };
+  }
+  function rsz() {
+    W = cv.width = window.innerWidth; H = cv.height = window.innerHeight;
+    particles.length = 0;
+    const n = Math.min(60, Math.floor((W * H) / 16000));
+    for (let i = 0; i < n; i++) particles.push(mkP());
+  }
+  window.addEventListener('resize', rsz, { passive: true });
+  rsz();
+  let pmx = -9999, pmy = -9999;
+  document.addEventListener('mousemove', e => { pmx = e.clientX; pmy = e.clientY; }, { passive: true });
+  const CDIST = 120;
+  (function loop() {
+    requestAnimationFrame(loop);
+    ctx.clearRect(0, 0, W, H);
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      const dx = pmx - p.x, dy = pmy - p.y, d = Math.sqrt(dx*dx+dy*dy);
+      if (d < 150) { p.vx += dx/d*.01; p.vy += dy/d*.01; }
+      const sp = Math.sqrt(p.vx*p.vx+p.vy*p.vy);
+      if (sp > .6) { p.vx = p.vx/sp*.6; p.vy = p.vy/sp*.6; }
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) { p.x = 0; p.vx *= -1; } if (p.x > W) { p.x = W; p.vx *= -1; }
+      if (p.y < 0) { p.y = 0; p.vy *= -1; } if (p.y > H) { p.y = H; p.vy *= -1; }
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = p.col + '0.6)'; ctx.fill();
+    }
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i+1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
+        const d = Math.sqrt(dx*dx+dy*dy);
+        if (d < CDIST) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(255,120,0,${(1-d/CDIST)*0.14})`;
+          ctx.lineWidth = .7; ctx.stroke();
         }
+      }
+    }
+  })();
+
+  // ── TEAM SIZE ──
+  let currentSize = 0;
+  function setSize(n) {
+    currentSize = n;
+    document.getElementById('team_size').value = n;
+    document.querySelectorAll('.sz-pill').forEach(p => p.classList.toggle('active', +p.dataset.n === n));
+    const cards = { p2c: 2, p3c: 3, p4c: 4 };
+    Object.entries(cards).forEach(([id, min]) => {
+      const card = document.getElementById(id);
+      if (n >= min) { card.classList.add('show'); }
+      else { card.classList.remove('show'); card.querySelectorAll('input,select').forEach(f => f.value = ''); }
+    });
+    for (let i = 1; i <= 4; i++) {
+      const d = document.getElementById('md' + i);
+      if (d) d.classList.toggle('on', i <= n);
+    }
+  }
+
+  // ── PHONE ONLY DIGITS ──
+  document.querySelectorAll('input[type="tel"]').forEach(el => {
+    el.addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g,'').slice(0,10); });
+  });
+
+  // ── CARD FOCUS ──
+  document.querySelectorAll('input,textarea,select').forEach(el => {
+    el.addEventListener('focus', () => el.closest('.participant-card')?.classList.add('focused'));
+    el.addEventListener('blur',  () => el.closest('.participant-card')?.classList.remove('focused'));
+  });
+
+  // ── STEP INDICATOR ──
+  const fss = ['fs1','fs2','fs3'].map(id => document.getElementById(id));
+  const sis = ['si1','si2','si3'].map(id => document.getElementById(id));
+  const sio = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const i = fss.indexOf(e.target);
+        sis.forEach((s, j) => s.classList.toggle('active', j === i));
+      }
+    });
+  }, { threshold: 0.4 });
+  fss.forEach(f => f && sio.observe(f));
+
+  // ── VALIDATION HELPERS ──
+  const validPhone = p => /^[6-9]\d{9}$/.test(p);
+  const validEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+  const val = name => (document.querySelector(`[name="${name}"]`)?.value || '').trim();
+
+  // ── TOAST ──
+  function toast(msg, type = 'error') {
+    document.querySelector('.toast')?.remove();
+    const t = document.createElement('div');
+    t.className = 'toast ' + type;
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 4500);
+  }
+
+  // ── FORM SUBMIT ──
+  document.getElementById('hackForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!currentSize)            { toast('Please select your team size first'); return; }
+    if (!val('team'))            { toast('Please enter your team name'); return; }
+    if (!val('college'))         { toast('Please enter your college name'); return; }
+    if (!val('p1'))              { toast('Please enter Team Leader name'); return; }
+    if (!validPhone(val('p1_phone'))) { toast('Team Leader: Enter a valid 10-digit mobile starting with 6–9'); return; }
+    if (!validEmail(val('p1_email'))) { toast('Team Leader: Enter a valid email address'); return; }
+    if (!val('p1_food'))         { toast('Team Leader: Please select food preference'); return; }
+
+    for (let i = 2; i <= currentSize; i++) {
+      if (!val(`p${i}`))               { toast(`Member ${i}: Please enter full name`); return; }
+      if (!validPhone(val(`p${i}_phone`))) { toast(`Member ${i}: Invalid mobile number`); return; }
+      if (!validEmail(val(`p${i}_email`))) { toast(`Member ${i}: Invalid email address`); return; }
+      if (!val(`p${i}_food`))          { toast(`Member ${i}: Please select food preference`); return; }
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true; btn.textContent = 'Submitting…';
+
+    const payload = {
+      team: val('team'), college: val('college'),
+      team_size: currentSize, medical: val('medical'),
+      p1: val('p1'), p1_phone: val('p1_phone'), p1_email: val('p1_email'), p1_food: val('p1_food'),
+      p2: val('p2'), p2_phone: val('p2_phone'), p2_email: val('p2_email'), p2_food: val('p2_food'),
+      p3: val('p3'), p3_phone: val('p3_phone'), p3_email: val('p3_email'), p3_food: val('p3_food'),
+      p4: val('p4'), p4_phone: val('p4_phone'), p4_email: val('p4_email'), p4_food: val('p4_food'),
+    };
+
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
-      for (let i = 1; i <= 4; i++) {
-        const d = document.getElementById('md' + i);
-        if (d) d.classList.toggle('on', i <= n);
+      const data = await res.json();
+      if (data.success) {
+        sessionStorage.setItem('reg_success', JSON.stringify(data));
+        window.location.href = 'success.html';
+      } else {
+        btn.disabled = false; btn.textContent = 'Submit Registration →';
+        const msgs = {
+          duplicate: '⚠️ This phone or email is already registered!',
+          invalid_phone: '⚠️ Invalid phone number.',
+          invalid_email: '⚠️ Invalid email address.',
+          missing_fields: '⚠️ Please fill all required fields.',
+          server_error: '❌ Server error. Please try again.',
+        };
+        toast(msgs[data.error] || '❌ Something went wrong. Please try again.');
       }
+    } catch {
+      btn.disabled = false; btn.textContent = 'Submit Registration →';
+      toast('❌ Network error. Please try again.');
     }
-
-    // ── PHONE INPUT: digits only ──
-    document.querySelectorAll('input[type="tel"]').forEach(el => {
-      el.addEventListener('input', e => {
-        e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
-      });
-    });
-
-    // ── CARD FOCUS HIGHLIGHT ──
-    document.querySelectorAll('input, textarea, select').forEach(el => {
-      el.addEventListener('focus', () => el.closest('.participant-card')?.classList.add('focused'));
-      el.addEventListener('blur',  () => el.closest('.participant-card')?.classList.remove('focused'));
-    });
-
-    // ── STEP INDICATOR ──
-    const fss = [document.getElementById('fs1'), document.getElementById('fs2'), document.getElementById('fs3')];
-    const sis = [document.getElementById('si1'), document.getElementById('si2'), document.getElementById('si3')];
-    if (fss[0] && sis[0]) {
-      const sio = new IntersectionObserver(entries => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            const i = fss.indexOf(e.target);
-            sis.forEach((s, j) => s.classList.toggle('active', j === i));
-          }
-        });
-      }, { threshold: 0.5 });
-      fss.forEach(s => sio.observe(s));
-    }
-
-    // ── VALIDATION ──
-    const validPhone = p => /^[6-9]\d{9}$/.test(p);
-    const validEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
-    const val = name => (document.querySelector(`[name="${name}"]`)?.value || '').trim();
-
-    // ── TOAST ──
-    function toast(msg, type = 'error') {
-      document.querySelector('.toast')?.remove();
-      const t = document.createElement('div');
-      t.className = 'toast';
-      t.textContent = msg;
-      const c = { error: '#ef5350', success: '#66bb6a', info: '#29b6f6' }[type];
-      t.style.cssText = `position:fixed;bottom:28px;right:28px;padding:16px 24px;background:${c};color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:600;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.5);z-index:9999;max-width:400px;animation:tin .3s ease;`;
-      document.head.insertAdjacentHTML('beforeend','<style>@keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}</style>');
-      document.body.appendChild(t);
-      setTimeout(() => t.remove(), 4000);
-    }
-
-    // ── FORM SUBMIT ──
-    document.getElementById('hackForm').addEventListener('submit', async e => {
-      e.preventDefault();
-
-      if (!currentSize) { toast('Please select your team size first'); return; }
-      if (!val('team'))  { toast('Please enter your team name'); return; }
-      if (!val('college')) { toast('Please enter your college name'); return; }
-      if (!val('p1'))    { toast('Please enter Team Leader name'); return; }
-      if (!validPhone(val('p1_phone'))) { toast('Team Leader: Enter a valid 10-digit mobile starting with 6–9'); return; }
-      if (!validEmail(val('p1_email'))) { toast('Team Leader: Enter a valid email address'); return; }
-      if (!val('p1_food')) { toast('Team Leader: Please select food preference'); return; }
-
-      for (let i = 2; i <= currentSize; i++) {
-        const name = val(`p${i}`);
-        if (!name) { toast(`Member ${i}: Please enter full name`); return; }
-        if (!validPhone(val(`p${i}_phone`))) { toast(`Member ${i}: Invalid mobile number`); return; }
-        if (!validEmail(val(`p${i}_email`))) { toast(`Member ${i}: Invalid email address`); return; }
-        if (!val(`p${i}_food`)) { toast(`Member ${i}: Please select food preference`); return; }
-      }
-
-      const btn = document.getElementById('submitBtn');
-      btn.disabled = true;
-      btn.textContent = 'Submitting…';
-
-      const payload = {
-        team: val('team'), college: val('college'),
-        team_size: currentSize, medical: val('medical'),
-        p1: val('p1'), p1_phone: val('p1_phone'), p1_email: val('p1_email'), p1_food: val('p1_food'),
-        p2: val('p2'), p2_phone: val('p2_phone'), p2_email: val('p2_email'), p2_food: val('p2_food'),
-        p3: val('p3'), p3_phone: val('p3_phone'), p3_email: val('p3_email'), p3_food: val('p3_food'),
-        p4: val('p4'), p4_phone: val('p4_phone'), p4_email: val('p4_email'), p4_food: val('p4_food'),
-      };
-
-      try {
-        const res = await fetch('/api/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-
-        if (data.success) {
-          sessionStorage.setItem('reg_success', JSON.stringify(data));
-          window.location.href = 'success.html';
-        } else {
-          btn.disabled = false;
-          btn.textContent = 'Submit Registration →';
-          const msgs = {
-            duplicate: '⚠️ This phone or email is already registered!',
-            invalid_phone: '⚠️ Invalid phone number.',
-            invalid_email: '⚠️ Invalid email address.',
-            missing_fields: '⚠️ Please fill all required fields.',
-            server_error: '❌ Server error. Please try again.',
-          };
-          toast(msgs[data.error] || '❌ Something went wrong. Please try again.');
-        }
-      } catch {
-        btn.disabled = false;
-        btn.textContent = 'Submit Registration →';
-        toast('❌ Network error. Please try again.');
-      }
-    });
-  </script>
+  });
+</script>
 </body>
 </html>
