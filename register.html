@@ -100,14 +100,12 @@
       overflow: hidden;
     }
     .reg-sidebar::before {
-      content: '';
-      position: absolute; inset: 0;
+      content: ''; position: absolute; inset: 0;
       background: radial-gradient(ellipse 120% 60% at 20% 10%, rgba(255,69,0,0.07) 0%, transparent 65%);
       pointer-events: none;
     }
     .reg-sidebar::after {
-      content: '⚡';
-      position: absolute; right: -20px; bottom: -40px;
+      content: '⚡'; position: absolute; right: -20px; bottom: -40px;
       font-size: 220px; opacity: .025; pointer-events: none; line-height: 1;
     }
 
@@ -122,15 +120,12 @@
       font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: #fff;
       box-shadow: 0 0 18px rgba(255,69,0,.35); flex-shrink: 0;
     }
-    .sidebar-brand-name {
-      font-size: 12px; font-weight: 600; color: var(--text); letter-spacing: .03em;
-    }
+    .sidebar-brand-name { font-size: 12px; font-weight: 600; color: var(--text); letter-spacing: .03em; }
 
     .reg-sidebar-title {
       font-family: 'Bebas Neue', sans-serif;
       font-size: clamp(52px, 5.5vw, 80px);
-      line-height: .9; letter-spacing: .01em; margin-bottom: 16px;
-      color: var(--text);
+      line-height: .9; letter-spacing: .01em; margin-bottom: 16px; color: var(--text);
       opacity: 0; animation: fadeUp .7s .2s forwards;
     }
     .reg-sidebar-title .grad {
@@ -145,7 +140,6 @@
       opacity: 0; animation: fadeUp .6s .35s forwards;
     }
 
-    /* STEPS */
     .reg-steps {
       display: flex; flex-direction: column; gap: 6px;
       opacity: 0; animation: fadeUp .6s .45s forwards;
@@ -157,11 +151,7 @@
       font-size: 13px; font-weight: 600; color: var(--muted);
       transition: all .3s; cursor: default;
     }
-    .reg-step.active {
-      background: rgba(255,69,0,0.08);
-      border-color: rgba(255,69,0,0.2);
-      color: var(--text);
-    }
+    .reg-step.active { background: rgba(255,69,0,0.08); border-color: rgba(255,69,0,0.2); color: var(--text); }
     .step-num {
       width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
       background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
@@ -169,13 +159,10 @@
       font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
       color: var(--muted); transition: all .3s;
     }
-    .reg-step.active .step-num {
-      background: rgba(255,69,0,0.15); border-color: rgba(255,69,0,0.35); color: var(--fire2);
-    }
+    .reg-step.active .step-num { background: rgba(255,69,0,0.15); border-color: rgba(255,69,0,0.35); color: var(--fire2); }
     .reg-step.done .step-num { background: rgba(255,140,0,0.12); border-color: rgba(255,140,0,0.3); color: var(--fire2); }
     .reg-step.done { color: rgba(240,230,211,.55); }
 
-    /* Sidebar event info pills */
     .sidebar-info-pills {
       display: flex; flex-direction: column; gap: 8px; margin-top: 28px;
       opacity: 0; animation: fadeUp .6s .55s forwards;
@@ -197,11 +184,9 @@
     }
 
     /* ═══ MAIN ═══ */
-    .reg-main {
-      padding: 56px 64px 80px;
-      position: relative;
-    }
+    .reg-main { padding: 56px 64px 80px; position: relative; }
 
+    /* ═══ BACK BUTTON — default (desktop) ═══ */
     .back-btn {
       display: inline-flex; align-items: center; gap: 7px;
       font-family: 'JetBrains Mono', monospace; font-size: 11px;
@@ -210,22 +195,18 @@
       padding: 8px 14px 8px 10px;
       border: 1px solid var(--border); border-radius: 9px;
       background: rgba(255,255,255,0.03);
-      transition: all .22s; margin-bottom: 32px; display: inline-flex;
+      transition: all .22s; margin-bottom: 32px;
       opacity: 0; animation: fadeUp .5s .1s forwards;
     }
     .back-btn:hover { color: var(--fire2); border-color: rgba(255,140,0,0.3); background: rgba(255,140,0,0.06); transform: translateX(-2px); }
     .back-btn svg { width: 14px; height: 14px; stroke: currentColor; flex-shrink: 0; transition: transform .22s; }
     .back-btn:hover svg { transform: translateX(-2px); }
 
-    .reg-main-header {
-      margin-bottom: 36px;
-      opacity: 0; animation: fadeUp .6s .2s forwards;
-    }
+    .reg-main-header { margin-bottom: 36px; opacity: 0; animation: fadeUp .6s .2s forwards; }
     .reg-eyebrow {
       display: inline-flex; align-items: center; gap: 8px;
       font-family: 'JetBrains Mono', monospace; font-size: 10px;
-      color: var(--fire2); letter-spacing: .14em; text-transform: uppercase;
-      margin-bottom: 10px;
+      color: var(--fire2); letter-spacing: .14em; text-transform: uppercase; margin-bottom: 10px;
     }
     .live-dot {
       width: 7px; height: 7px; border-radius: 50%; background: #22dd44;
@@ -234,20 +215,16 @@
     @keyframes liveBlink { 0%,100%{opacity:1} 50%{opacity:.3} }
     .reg-main-title {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(38px,4.5vw,64px); line-height: 1;
-      color: var(--text); margin-bottom: 6px;
+      font-size: clamp(38px,4.5vw,64px); line-height: 1; color: var(--text); margin-bottom: 6px;
     }
-    .reg-main-sub {
-      font-size: 13px; color: var(--muted);
-    }
+    .reg-main-sub { font-size: 13px; color: var(--muted); }
     .asterisk { color: var(--fire); }
 
     /* ═══ FORM SECTIONS ═══ */
     .form-section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px; padding: 32px;
-      margin-bottom: 20px; position: relative; overflow: hidden;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 32px; margin-bottom: 20px;
+      position: relative; overflow: hidden;
       opacity: 0; animation: fadeUp .6s forwards;
     }
     .form-section:nth-child(1) { animation-delay: .3s; }
@@ -257,15 +234,12 @@
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
       background: linear-gradient(90deg, var(--fire), var(--fire2), var(--ember));
     }
-
     .form-section-title {
       font-family: 'JetBrains Mono', monospace; font-size: 10px;
       color: var(--fire2); letter-spacing: .14em; text-transform: uppercase;
       margin-bottom: 24px; display: flex; align-items: center; gap: 10px;
     }
-    .form-section-title::after {
-      content: ''; flex: 1; height: 1px; background: var(--border);
-    }
+    .form-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
     .form-row:last-of-type { margin-bottom: 0; }
@@ -274,14 +248,11 @@
 
     label {
       font-family: 'JetBrains Mono', monospace; font-size: 10px;
-      font-weight: 700; color: var(--muted); letter-spacing: .09em;
-      text-transform: uppercase;
+      font-weight: 700; color: var(--muted); letter-spacing: .09em; text-transform: uppercase;
     }
-
     input, select, textarea {
       width: 100%; padding: 12px 16px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.09);
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
       border-radius: 11px; color: var(--text); font-family: 'Syne', sans-serif;
       font-size: 14px; outline: none;
       transition: border-color .25s, background .25s, box-shadow .25s;
@@ -289,8 +260,7 @@
     }
     input::placeholder, textarea::placeholder { color: rgba(240,230,211,0.2); }
     input:focus, select:focus, textarea:focus {
-      border-color: rgba(255,140,0,0.4);
-      background: rgba(255,140,0,0.04);
+      border-color: rgba(255,140,0,0.4); background: rgba(255,140,0,0.04);
       box-shadow: 0 0 0 3px rgba(255,140,0,0.08);
     }
     select {
@@ -307,22 +277,15 @@
       width: 54px; height: 54px; display: grid; place-items: center;
       background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.09);
       border-radius: 12px; font-family: 'Bebas Neue', sans-serif; font-size: 24px;
-      color: rgba(240,230,211,0.3); cursor: pointer;
-      transition: all .25s; user-select: none;
+      color: rgba(240,230,211,0.3); cursor: pointer; transition: all .25s; user-select: none;
     }
     .sz-pill:hover { border-color: rgba(255,140,0,0.4); color: var(--text); background: rgba(255,140,0,0.07); }
-    .sz-pill.active {
-      border-color: var(--fire2); background: rgba(255,140,0,0.14);
-      color: var(--text); box-shadow: 0 0 20px rgba(255,140,0,0.22);
-    }
+    .sz-pill.active { border-color: var(--fire2); background: rgba(255,140,0,0.14); color: var(--text); box-shadow: 0 0 20px rgba(255,140,0,0.22); }
     #team_size { display: none; }
 
     /* ═══ MEMBER PROGRESS ═══ */
     .member-dots { display: flex; gap: 7px; margin-bottom: 24px; }
-    .mdot {
-      height: 3px; flex: 1; border-radius: 2px;
-      background: rgba(255,255,255,0.07); transition: background .35s;
-    }
+    .mdot { height: 3px; flex: 1; border-radius: 2px; background: rgba(255,255,255,0.07); transition: background .35s; }
     .mdot.on { background: linear-gradient(90deg, var(--fire), var(--fire2)); }
 
     /* ═══ PARTICIPANT CARD ═══ */
@@ -331,10 +294,8 @@
     @keyframes slideIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
     .participant-card {
-      background: rgba(255,255,255,0.025);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 16px; padding: 22px; margin-bottom: 14px;
-      transition: border-color .3s;
+      background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; padding: 22px; margin-bottom: 14px; transition: border-color .3s;
     }
     .participant-card:last-child { margin-bottom: 0; }
     .participant-card.focused { border-color: rgba(255,140,0,0.25); }
@@ -342,21 +303,16 @@
 
     .participant-label {
       display: flex; align-items: center; gap: 9px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px; font-weight: 700;
+      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
       color: var(--muted); letter-spacing: .08em; text-transform: uppercase;
-      margin-bottom: 18px; padding-bottom: 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.06);
     }
     .p-num {
       width: 26px; height: 26px; border-radius: 7px;
       background: rgba(255,140,0,0.1); border: 1px solid rgba(255,140,0,0.25);
-      display: grid; place-items: center;
-      font-size: 12px; font-weight: 700; color: var(--fire2); flex-shrink: 0;
+      display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--fire2); flex-shrink: 0;
     }
-    .p-badge {
-      padding: 2px 9px; border-radius: 5px; font-size: 10px; letter-spacing: .05em;
-    }
+    .p-badge { padding: 2px 9px; border-radius: 5px; font-size: 10px; letter-spacing: .05em; }
     .p-leader { background: rgba(255,140,0,0.12); border: 1px solid rgba(255,140,0,0.25); color: var(--fire2); }
     .p-required { background: rgba(255,69,0,0.1); border: 1px solid rgba(255,69,0,0.2); color: var(--fire); }
     .p-optional { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: rgba(240,230,211,.35); }
@@ -368,8 +324,7 @@
       color: #fff; border: none; border-radius: 14px;
       font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: .08em;
       cursor: pointer; position: relative; overflow: hidden;
-      box-shadow: 0 8px 32px rgba(255,69,0,0.35);
-      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 8px 32px rgba(255,69,0,0.35); transition: transform .2s, box-shadow .2s;
       opacity: 0; animation: fadeUp .6s .6s forwards;
     }
     .btn-submit::before {
@@ -377,10 +332,8 @@
       background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.1) 100%);
     }
     .btn-submit::after {
-      content: ''; position: absolute;
-      top: -50%; left: -60%; width: 40%; height: 200%;
-      background: rgba(255,255,255,0.12); transform: skewX(-20deg);
-      transition: left .5s ease;
+      content: ''; position: absolute; top: -50%; left: -60%; width: 40%; height: 200%;
+      background: rgba(255,255,255,0.12); transform: skewX(-20deg); transition: left .5s ease;
     }
     .btn-submit:hover::after { left: 130%; }
     .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 14px 44px rgba(255,69,0,.5); }
@@ -397,8 +350,7 @@
       position: fixed; bottom: 28px; right: 28px;
       padding: 16px 22px; border-radius: 13px;
       font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600;
-      color: #fff; z-index: 9999; max-width: 380px;
-      animation: toastIn .3s ease;
+      color: #fff; z-index: 9999; max-width: 380px; animation: toastIn .3s ease;
     }
     @keyframes toastIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
     .toast.error   { background: rgba(255,69,0,0.95); border: 1px solid rgba(255,69,0,0.4); box-shadow: 0 8px 32px rgba(255,69,0,0.4); }
@@ -407,13 +359,16 @@
     /* ═══ ANIMATIONS ═══ */
     @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
 
-    /* ═══ RESPONSIVE ═══ */
+    /* ═══ RESPONSIVE — 1100px ═══ */
     @media (max-width: 1100px) {
       .reg-page { grid-template-columns: 300px 1fr; }
       .reg-main { padding: 40px 36px 64px; }
     }
+
+    /* ═══ RESPONSIVE — 800px MOBILE ═══ */
     @media (max-width: 800px) {
       .reg-page { grid-template-columns: 1fr; }
+
       .reg-sidebar {
         position: static; height: auto; padding: 28px 20px;
         border-right: none; border-bottom: 1px solid var(--border);
@@ -423,15 +378,37 @@
       .reg-step { flex: 1; min-width: 120px; font-size: 11px; }
       .sidebar-info-pills { flex-direction: row; flex-wrap: wrap; }
       .sip { flex: 1; min-width: 150px; font-size: 11px; }
-      .reg-main { padding: 28px 18px 60px; }
       .form-row { grid-template-columns: 1fr; }
       .form-group.full { grid-column: 1; }
       .size-pills { gap: 8px; }
       .sz-pill { width: 48px; height: 48px; font-size: 20px; }
+
+      /* ── BACK BUTTON: fixed top-left on mobile, always visible ── */
+      .back-btn {
+        position: fixed;
+        top: 14px;
+        left: 14px;
+        z-index: 600;
+        margin-bottom: 0;
+        opacity: 1;
+        animation: none;
+        background: rgba(6,4,2,0.92);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-color: rgba(255,140,0,0.3);
+        color: var(--fire2);
+        box-shadow: 0 4px 22px rgba(0,0,0,0.6);
+      }
+
+      /* Push content down so it doesn't hide under the fixed button */
+      .reg-main { padding: 70px 18px 60px; }
     }
+
+    /* ═══ RESPONSIVE — 480px ═══ */
     @media (max-width: 480px) {
       .reg-steps { flex-direction: column; }
       .sip { min-width: 100%; }
+      .toast { right: 12px; left: 12px; max-width: none; font-size: 13px; }
     }
   </style>
 </head>
@@ -468,15 +445,9 @@
       </p>
 
       <div class="reg-steps">
-        <div class="reg-step active" id="si1">
-          <div class="step-num">1</div>Team Details
-        </div>
-        <div class="reg-step" id="si2">
-          <div class="step-num">2</div>Team Members
-        </div>
-        <div class="reg-step" id="si3">
-          <div class="step-num">3</div>Health & Prefs
-        </div>
+        <div class="reg-step active" id="si1"><div class="step-num">1</div>Team Details</div>
+        <div class="reg-step" id="si2"><div class="step-num">2</div>Team Members</div>
+        <div class="reg-step" id="si3"><div class="step-num">3</div>Health &amp; Prefs</div>
       </div>
 
       <div class="sidebar-info-pills">
@@ -497,6 +468,7 @@
   <!-- ══════════════ MAIN ══════════════ -->
   <main class="reg-main">
 
+    <!-- BACK BUTTON — inline on desktop, fixed on mobile -->
     <a href="index.html" class="back-btn">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M19 12H5M5 12l7-7M5 12l7 7"/>
@@ -518,21 +490,17 @@
       <!-- ── STEP 1: TEAM DETAILS ── -->
       <div class="form-section" id="fs1">
         <div class="form-section-title">Step 1 — Team Details</div>
-
         <div class="form-row">
           <div class="form-group full">
             <label>Team Name *</label>
             <input id="team" name="team" type="text"
-              placeholder="e.g. ByteForce, NullPointers, CodeNinjas…"
-              required autocomplete="off">
+              placeholder="e.g. ByteForce, NullPointers, CodeNinjas…" required autocomplete="off">
           </div>
         </div>
-
         <div class="form-row">
           <div class="form-group">
             <label>College / Institution *</label>
-            <input id="college" name="college" type="text"
-              placeholder="Your college name" required autocomplete="off">
+            <input id="college" name="college" type="text" placeholder="Your college name" required autocomplete="off">
           </div>
           <div class="form-group">
             <label>Team Size *</label>
@@ -554,7 +522,6 @@
       <!-- ── STEP 2: MEMBERS ── -->
       <div class="form-section" id="fs2">
         <div class="form-section-title">Step 2 — Team Members</div>
-
         <div class="member-dots">
           <div class="mdot on" id="md1"></div>
           <div class="mdot" id="md2"></div>
@@ -712,9 +679,7 @@
         </div>
       </div>
 
-      <button type="submit" class="btn-submit" id="submitBtn">
-        Submit Registration →
-      </button>
+      <button type="submit" class="btn-submit" id="submitBtn">Submit Registration →</button>
       <p class="form-note">By submitting, you agree to the event terms &amp; code of conduct.</p>
 
     </form>
@@ -727,7 +692,7 @@
   // ── LOADER ──
   const LS = ['LOADING','PREPARING','ALMOST THERE','LET\'S GO'];
   let li2 = 0, pr = 0;
-  const lEl = document.getElementById('loader'),
+  const lEl  = document.getElementById('loader'),
         lBar = document.getElementById('loaderBar'),
         lPct = document.getElementById('loaderPct'),
         lTxt = document.getElementById('loaderText');
@@ -834,12 +799,12 @@
     }
   }
 
-  // ── PHONE ONLY DIGITS ──
+  // ── PHONE: digits only ──
   document.querySelectorAll('input[type="tel"]').forEach(el => {
     el.addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g,'').slice(0,10); });
   });
 
-  // ── CARD FOCUS ──
+  // ── CARD FOCUS HIGHLIGHT ──
   document.querySelectorAll('input,textarea,select').forEach(el => {
     el.addEventListener('focus', () => el.closest('.participant-card')?.classList.add('focused'));
     el.addEventListener('blur',  () => el.closest('.participant-card')?.classList.remove('focused'));
@@ -876,19 +841,19 @@
   // ── FORM SUBMIT ──
   document.getElementById('hackForm').addEventListener('submit', async e => {
     e.preventDefault();
-    if (!currentSize)            { toast('Please select your team size first'); return; }
-    if (!val('team'))            { toast('Please enter your team name'); return; }
-    if (!val('college'))         { toast('Please enter your college name'); return; }
-    if (!val('p1'))              { toast('Please enter Team Leader name'); return; }
+    if (!currentSize)                 { toast('Please select your team size first'); return; }
+    if (!val('team'))                 { toast('Please enter your team name'); return; }
+    if (!val('college'))              { toast('Please enter your college name'); return; }
+    if (!val('p1'))                   { toast('Please enter Team Leader name'); return; }
     if (!validPhone(val('p1_phone'))) { toast('Team Leader: Enter a valid 10-digit mobile starting with 6–9'); return; }
     if (!validEmail(val('p1_email'))) { toast('Team Leader: Enter a valid email address'); return; }
-    if (!val('p1_food'))         { toast('Team Leader: Please select food preference'); return; }
+    if (!val('p1_food'))              { toast('Team Leader: Please select food preference'); return; }
 
     for (let i = 2; i <= currentSize; i++) {
-      if (!val(`p${i}`))               { toast(`Member ${i}: Please enter full name`); return; }
+      if (!val(`p${i}`))                   { toast(`Member ${i}: Please enter full name`); return; }
       if (!validPhone(val(`p${i}_phone`))) { toast(`Member ${i}: Invalid mobile number`); return; }
       if (!validEmail(val(`p${i}_email`))) { toast(`Member ${i}: Invalid email address`); return; }
-      if (!val(`p${i}_food`))          { toast(`Member ${i}: Please select food preference`); return; }
+      if (!val(`p${i}_food`))              { toast(`Member ${i}: Please select food preference`); return; }
     }
 
     const btn = document.getElementById('submitBtn');
@@ -915,11 +880,11 @@
       } else {
         btn.disabled = false; btn.textContent = 'Submit Registration →';
         const msgs = {
-          duplicate: '⚠️ This phone or email is already registered!',
-          invalid_phone: '⚠️ Invalid phone number.',
-          invalid_email: '⚠️ Invalid email address.',
+          duplicate:      '⚠️ This phone or email is already registered!',
+          invalid_phone:  '⚠️ Invalid phone number.',
+          invalid_email:  '⚠️ Invalid email address.',
           missing_fields: '⚠️ Please fill all required fields.',
-          server_error: '❌ Server error. Please try again.',
+          server_error:   '❌ Server error. Please try again.',
         };
         toast(msgs[data.error] || '❌ Something went wrong. Please try again.');
       }
