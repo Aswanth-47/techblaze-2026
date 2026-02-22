@@ -178,6 +178,387 @@ nav.scrolled{background:rgba(6,4,2,.94);backdrop-filter:blur(20px);border-bottom
 .marquee-item.hl{color:var(--fire2);}
 @keyframes marqScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
+/* ═══════════════════════════════════════════════
+   VENUE & DATE/TIME SECTION — NEW
+═══════════════════════════════════════════════ */
+.venue-section {
+  position: relative;
+  z-index: 5;
+  padding: 72px 64px;
+  overflow: hidden;
+}
+.venue-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 80% at 10% 50%, rgba(255,69,0,0.05) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 70% at 90% 50%, rgba(255,215,0,0.03) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.venue-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.venue-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--fire2);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 36px;
+}
+.venue-label::after { content: ''; width: 44px; height: 1px; background: var(--fire2); opacity: .35; }
+
+.venue-grid {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  gap: 0;
+  align-items: stretch;
+}
+
+.venue-vline {
+  background: linear-gradient(180deg,
+    transparent 0%,
+    rgba(255,140,0,0.22) 20%,
+    rgba(255,140,0,0.35) 50%,
+    rgba(255,140,0,0.22) 80%,
+    transparent 100%
+  );
+  width: 1px;
+  align-self: stretch;
+  margin: 0 52px;
+  animation: vlinePulse 3s ease-in-out infinite;
+}
+@keyframes vlinePulse {
+  0%,100% { opacity: 0.6; }
+  50%      { opacity: 1; box-shadow: 0 0 12px rgba(255,140,0,0.3); }
+}
+
+/* DATE BLOCK */
+.venue-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.vb-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--fire2);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.vb-eyebrow-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255,69,0,0.1);
+  border: 1px solid rgba(255,140,0,0.25);
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  flex-shrink: 0;
+  animation: iconGlow 3s ease-in-out infinite;
+}
+.venue-block:last-child .vb-eyebrow-icon {
+  animation-delay: 1.5s;
+}
+@keyframes iconGlow {
+  0%,100% { box-shadow: 0 0 0px rgba(255,69,0,0); border-color: rgba(255,140,0,0.25); }
+  50%      { box-shadow: 0 0 18px rgba(255,69,0,0.3); border-color: rgba(255,140,0,0.55); }
+}
+
+.vb-main-date {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(42px, 5.5vw, 76px);
+  line-height: 0.9;
+  color: var(--text);
+  letter-spacing: 0.01em;
+  margin-bottom: 6px;
+  background: linear-gradient(135deg, var(--text) 0%, rgba(240,230,211,0.7) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.vb-day-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(255,69,0,0.1);
+  border: 1px solid rgba(255,69,0,0.22);
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--fire2);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  width: fit-content;
+}
+
+/* TIMELINE — time display */
+.time-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+.time-timeline::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 24px;
+  bottom: 24px;
+  width: 1px;
+  background: linear-gradient(180deg, var(--fire2), rgba(255,140,0,0.1));
+}
+.tt-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 0;
+  position: relative;
+}
+.tt-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid var(--fire2);
+  background: var(--dark);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.tt-dot-inner {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--fire2);
+  animation: dotBreath 2.5s ease-in-out infinite;
+}
+.tt-row:last-child .tt-dot-inner {
+  background: var(--ember);
+  animation-delay: 1.2s;
+}
+.tt-row:last-child .tt-dot { border-color: var(--ember); }
+@keyframes dotBreath {
+  0%,100% { transform: scale(1); opacity: 0.9; }
+  50%      { transform: scale(1.4); opacity: 1; }
+}
+.tt-connector {
+  height: 28px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.tt-connector-line {
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--fire2), rgba(255,140,0,0.3));
+  margin: 0 auto;
+}
+.tt-info {}
+.tt-time-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.tt-time-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  color: var(--text);
+  line-height: 1;
+}
+.tt-time-val.amber { color: var(--ember); }
+.tt-duration {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 10px;
+  background: rgba(255,140,0,0.07);
+  border: 1px solid rgba(255,140,0,0.15);
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: .08em;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* VENUE NAME BLOCK */
+.vb-venue-card {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .3s, transform .3s;
+}
+.vb-venue-card:hover {
+  border-color: rgba(255,140,0,0.28);
+  transform: translateY(-3px);
+}
+.vb-venue-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--fire), var(--fire2), var(--ember));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .5s ease;
+}
+.vb-venue-card:hover::before { transform: scaleX(1); }
+
+.vb-venue-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(28px, 3.5vw, 48px);
+  line-height: 1;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.vb-venue-sub {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.vb-venue-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.vb-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(240,230,211,0.55);
+  letter-spacing: .06em;
+  transition: border-color .2s, color .2s, background .2s;
+}
+.vb-tag:hover {
+  border-color: rgba(255,140,0,0.3);
+  color: var(--fire2);
+  background: rgba(255,140,0,0.05);
+}
+
+/* Bottom banner inside venue section */
+.venue-bottom-banner {
+  margin-top: 40px;
+  background: linear-gradient(135deg, rgba(255,69,0,0.07), rgba(255,215,0,0.04), rgba(255,69,0,0.03));
+  border: 1px solid rgba(255,140,0,0.18);
+  border-radius: 16px;
+  padding: 22px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.venue-bottom-banner::after {
+  content: '📍';
+  position: absolute;
+  right: 24px;
+  font-size: 80px;
+  opacity: 0.04;
+  pointer-events: none;
+  line-height: 1;
+  transform: rotate(-10deg);
+}
+.vbb-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.vbb-fire-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--fire), var(--fire2));
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  box-shadow: 0 4px 18px rgba(255,69,0,0.3);
+  flex-shrink: 0;
+  animation: badgeBounce 4s ease-in-out infinite;
+}
+@keyframes badgeBounce {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  25%      { transform: translateY(-3px) rotate(-3deg); }
+  75%      { transform: translateY(-3px) rotate(3deg); }
+}
+.vbb-text-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.vbb-text-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .1em;
+}
+.vbb-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.vbb-pill {
+  padding: 7px 16px;
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .08em;
+  font-weight: 600;
+}
+.vbb-pill.date-pill {
+  background: rgba(255,69,0,0.12);
+  border: 1px solid rgba(255,69,0,0.25);
+  color: var(--fire2);
+}
+.vbb-pill.time-pill {
+  background: rgba(255,215,0,0.08);
+  border: 1px solid rgba(255,215,0,0.2);
+  color: var(--ember);
+}
+
+/* ═══ END VENUE SECTION ═══ */
+
 /* FOOTER */
 footer{position:relative;z-index:5;padding:36px 64px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--muted);}
 .footer-link{color:var(--fire2);text-decoration:none;font-weight:600;transition:color .2s;}
@@ -199,6 +580,10 @@ footer{position:relative;z-index:5;padding:36px 64px;border-top:1px solid var(--
   .stats-strip{grid-template-columns:repeat(2,1fr);gap:28px 0;padding:36px;}
   .stat-item:nth-child(2)::after,.stat-item:nth-child(4)::after{display:none;}
   .scroll-hint{left:36px;}
+  .venue-section{padding:60px 36px;}
+  .venue-grid{grid-template-columns:1fr;gap:40px;}
+  .venue-vline{display:none;}
+  .venue-bottom-banner{padding:18px 22px;}
 }
 @media(max-width:680px){
   nav,nav.scrolled{padding:12px 16px;}
@@ -214,6 +599,9 @@ footer{position:relative;z-index:5;padding:36px 64px;border-top:1px solid var(--
   .scroll-hint{display:none;}
   .marquee-wrap{display:none;}
   .event-tagline{padding:28px 20px;}
+  .venue-section{padding:48px 16px;}
+  .venue-bottom-banner{flex-direction:column;align-items:flex-start;}
+  .vbb-right{flex-wrap:wrap;}
 }
 </style>
 </head>
@@ -233,10 +621,10 @@ footer{position:relative;z-index:5;padding:36px 64px;border-top:1px solid var(--
   <a href="#" class="nav-brand">
     <div class="nav-logo">CT</div>
     <span class="nav-name">Computer Engineering</span>
-    
   </a>
   <ul class="nav-links">
     <li><button class="nav-link-btn" onclick="goTo('about')">About</button></li>
+    <li><button class="nav-link-btn" onclick="goTo('venue')">Venue</button></li>
     <li><button class="nav-link-btn" onclick="goTo('events')">Event</button></li>
     <li><button class="nav-link-btn" onclick="goTo('why-participate')">Why Join</button></li>
     <li><a href="register.html" class="btn-nav">Register →</a></li>
@@ -313,6 +701,103 @@ footer{position:relative;z-index:5;padding:36px 64px;border-top:1px solid var(--
 </div>
 <div class="divider"></div>
 
+<!-- ═══════════════════════════════════════════
+     VENUE & DATE/TIME SECTION
+═══════════════════════════════════════════ -->
+<section class="venue-section" id="venue">
+  <div class="venue-inner">
+
+    <div class="venue-label reveal">📍 When &amp; Where</div>
+
+    <div class="venue-grid">
+
+      <!-- LEFT: DATE & TIME -->
+      <div class="venue-block reveal">
+        <div class="vb-eyebrow">
+          <div class="vb-eyebrow-icon">🗓️</div>
+          Date &amp; Time
+        </div>
+
+        <div class="vb-main-date">25 FEB<br>2026</div>
+        <div class="vb-day-badge">
+          <span class="live-dot" style="background:#ff8c00;box-shadow:0 0 8px #ff8c00;"></span>
+          Wednesday
+        </div>
+
+        <div class="time-timeline">
+          <!-- START -->
+          <div class="tt-row">
+            <div class="tt-dot"><div class="tt-dot-inner"></div></div>
+            <div class="tt-info">
+              <div class="tt-time-label">Kickoff — 25 Feb 2026</div>
+              <div class="tt-time-val">8:00 <span style="font-size:18px;color:var(--fire2)">PM</span></div>
+            </div>
+          </div>
+          <!-- CONNECTOR -->
+          <div class="tt-row" style="padding:0;">
+            <div class="tt-connector"><div class="tt-connector-line"></div></div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.1em;padding-left:4px;">
+              12 HOURS NON-STOP
+            </div>
+          </div>
+          <!-- END -->
+          <div class="tt-row">
+            <div class="tt-dot" style="border-color:var(--ember);"><div class="tt-dot-inner" style="background:var(--ember);"></div></div>
+            <div class="tt-info">
+              <div class="tt-time-label">Wrap-Up — 26 Feb 2026</div>
+              <div class="tt-time-val amber">8:00 <span style="font-size:18px;color:rgba(255,215,0,0.65)">AM</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VERTICAL DIVIDER -->
+      <div class="venue-vline reveal rd1"></div>
+
+      <!-- RIGHT: VENUE -->
+      <div class="venue-block reveal rd2">
+        <div class="vb-eyebrow">
+          <div class="vb-eyebrow-icon">🏛️</div>
+          Venue
+        </div>
+
+        <div class="vb-venue-card">
+          <div class="vb-venue-name">JDT Islam Polytechnic<br>Conference Hall</div>
+          <div class="vb-venue-sub">JDT Islam Polytechnic College<br>Calicut, Kerala — India</div>
+          <div class="vb-venue-tags">
+            <span class="vb-tag">🏫 On-Campus</span>
+            <span class="vb-tag">🎙️ Conference Hall</span>
+            <span class="vb-tag">🍕 Food Provided</span>
+            <span class="vb-tag">💡 Fully Equipped</span>
+            <span class="vb-tag">⚡ Power Backup</span>
+            <span class="vb-tag">📶 High-Speed WiFi</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /venue-grid -->
+
+    <!-- BOTTOM QUICK-GLANCE BANNER -->
+    <div class="venue-bottom-banner reveal rd3">
+      <div class="vbb-left">
+        <div class="vbb-fire-badge">⚡</div>
+        <div>
+          <div class="vbb-text-title">Tech Blaze 3.0 — State Level Hackathon</div>
+          <div class="vbb-text-sub">JDT Islam Polytechnic Conference Hall · Calicut · Kerala</div>
+        </div>
+      </div>
+      <div class="vbb-right">
+        <span class="vbb-pill date-pill">📅 25 Feb 2026</span>
+        <span class="vbb-pill time-pill">🕗 8 PM → 8 AM</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="divider"></div>
+
 <section class="section" id="about">
   <div class="section-label reveal">About</div>
   <h2 class="section-title reveal rd1">Where Engineering<br>Meets Innovation</h2>
@@ -359,6 +844,8 @@ footer{position:relative;z-index:5;padding:36px 64px;border-top:1px solid var(--
         <div class="ec-detail"><div class="ec-detail-icon">⏱️</div>12 continuous hours</div>
         <div class="ec-detail"><div class="ec-detail-icon">🏆</div>Cash prizes & recognition</div>
         <div class="ec-detail"><div class="ec-detail-icon">🍕</div>Meals & refreshments provided</div>
+        <div class="ec-detail"><div class="ec-detail-icon">📍</div>JDT Islam Polytechnic Conference Hall</div>
+        <div class="ec-detail"><div class="ec-detail-icon">🕗</div>25 Feb 8 PM — 26 Feb 8 AM</div>
       </div>
       <div class="event-highlights">
         <h4>What to Expect</h4>
@@ -393,7 +880,7 @@ const lInt=setInterval(()=>{
   if(pr>=100){clearInterval(lInt);setTimeout(()=>lEl.classList.add('done'),300);setTimeout(()=>lEl.style.display='none',1050);}
 },38);
 
-// ── CURSOR (desktop only, no rAF conflict) ──
+// ── CURSOR ──
 const isMouse=window.matchMedia('(hover:hover) and (pointer:fine)').matches;
 if(isMouse){
   const dot=document.getElementById('curDot'),ring=document.getElementById('curRing');
@@ -411,75 +898,53 @@ if(isMouse){
   });
 }
 
-// ── CANVAS — particle network (Nexora-style) ──
+// ── CANVAS ──
 const cv=document.getElementById('mainCanvas');
 const cx=cv.getContext('2d');
 let W=0,H=0;
 function rsz(){
   W=cv.width=window.innerWidth;
   H=cv.height=window.innerHeight;
-  // rebuild particles on resize so they fill new dimensions
   particles.length=0;
   const count=Math.min(80,Math.floor((W*H)/14000));
   for(let i=0;i<count;i++) particles.push(mkParticle());
 }
-
 function mkParticle(){
   return{
     x:Math.random()*W, y:Math.random()*H,
     vx:(Math.random()-.5)*.4, vy:(Math.random()-.5)*.4,
     r:Math.random()*1.6+.8,
-    // fire-toned colours for consistency with site theme
     col: Math.random()<.6 ? 'rgba(255,140,0,' : Math.random()<.5 ? 'rgba(255,69,0,' : 'rgba(255,215,0,'
   };
 }
-
 const particles=[];
-// initial population after W/H are set
 window.addEventListener('resize',rsz,{passive:true});
-rsz(); // sets W,H and fills particles
-
-const CONNECT_DIST=130; // max px to draw a line
-
+rsz();
+const CONNECT_DIST=130;
 let isScrolling=false,scrollTmo;
 window.addEventListener('scroll',()=>{isScrolling=true;clearTimeout(scrollTmo);scrollTmo=setTimeout(()=>isScrolling=false,120);},{passive:true});
-
 let heroVisible=true;
 const heroObs=new IntersectionObserver(es=>heroVisible=es[0].isIntersecting,{threshold:0});
 heroObs.observe(document.getElementById('hero'));
-
-// mouse position for interactive pull
 let mx=-9999,my=-9999;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;},{passive:true});
-
 function loop(){
   requestAnimationFrame(loop);
   if(isScrolling||!heroVisible){cx.clearRect(0,0,W,H);return;}
   cx.clearRect(0,0,W,H);
-
-  // update + draw dots
   for(let i=0;i<particles.length;i++){
     const p=particles[i];
-
-    // subtle mouse attraction
     const mdx=mx-p.x, mdy=my-p.y;
     const md=Math.sqrt(mdx*mdx+mdy*mdy);
     if(md<160){p.vx+=mdx/md*.012;p.vy+=mdy/md*.012;}
-
-    // speed cap
     const sp=Math.sqrt(p.vx*p.vx+p.vy*p.vy);
     if(sp>.7){p.vx=p.vx/sp*.7;p.vy=p.vy/sp*.7;}
-
     p.x+=p.vx; p.y+=p.vy;
-    // bounce off edges
     if(p.x<0){p.x=0;p.vx*=-1;} if(p.x>W){p.x=W;p.vx*=-1;}
     if(p.y<0){p.y=0;p.vy*=-1;} if(p.y>H){p.y=H;p.vy*=-1;}
-
     cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);
     cx.fillStyle=p.col+'0.7)';cx.fill();
   }
-
-  // draw connections — only between nearby pairs
   for(let i=0;i<particles.length;i++){
     for(let j=i+1;j<particles.length;j++){
       const dx=particles[i].x-particles[j].x;
@@ -500,7 +965,7 @@ function loop(){
 }
 loop();
 
-// ── FLOATING BADGES — 8 only ──
+// ── FLOATING BADGES ──
 ['React','Python','Node.js','AI/ML','Docker','Flutter','TypeScript','Firebase'].forEach(t=>{
   const b=document.createElement('div');b.className='fbadge';b.textContent=t;
   const dur=14+Math.random()*14;
@@ -558,16 +1023,9 @@ function scramble(el,final){
 setTimeout(()=>scramble(document.getElementById('heroTitle'),'TECH BLAZE'),800);
 
 // ── MARQUEE ──
-const mItems=['TECH BLAZE 3.0','12 HOURS','BUILD. CREATE. WIN.','₹10,000 PRIZE POOL','OPEN TO ALL TEAMS','COMP. ENGINEERING','REGISTER NOW','HACKATHON 2026'];
+const mItems=['TECH BLAZE 3.0','12 HOURS','BUILD. CREATE. WIN.','₹10,000 PRIZE POOL','OPEN TO ALL TEAMS','COMP. ENGINEERING','REGISTER NOW','HACKATHON 2026','25 FEB 2026','JDT ISLAM POLYTECHNIC','8 PM → 8 AM'];
 const mTrack=document.getElementById('marquee');
 [...mItems,...mItems].forEach((t,i)=>{const d=document.createElement('div');d.className='marquee-item'+(i%3===1?' hl':'');d.innerHTML=`${t}<span class="mdot"></span>`;mTrack.appendChild(d);});
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
