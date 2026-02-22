@@ -134,7 +134,7 @@
       <input type="file" id="screenshotInput" accept="image/*" onchange="onFileChosen(event)">
       <div class="upload-icon">📸</div>
       <div class="upload-text">Tap to attach screenshot</div>
-      <div class="upload-sub">JPG / PNG · max 4 MB</div>
+      <div class="upload-sub">JPG / PNG · max 10 MB (auto-compressed)</div>
     </div>
 
     <div class="preview-wrap" id="previewWrap">
@@ -185,21 +185,35 @@
     });
   }
 
-  // ── File handling ──
+  // ── File handling with auto-compression ──
   let fileBase64 = null;
 
   function onFileChosen(e) {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 4 * 1024 * 1024) { alert('File too large. Please use an image under 4 MB.'); return; }
+    if (file.size > 10 * 1024 * 1024) { alert('File too large. Please use an image under 10 MB.'); return; }
 
     const reader = new FileReader();
     reader.onload = (ev) => {
-      fileBase64 = ev.target.result; // full data URL
-      document.getElementById('previewImg').src = fileBase64;
-      document.getElementById('previewWrap').style.display = 'block';
-      document.getElementById('uploadZone').style.display  = 'none';
-      document.getElementById('sendBtn').disabled = false;
+      const img = new Image();
+      img.onload = () => {
+        // Scale down if wider than 1800px
+        const MAX = 1800;
+        let w = img.width, h = img.height;
+        if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        // Try 0.85 quality; drop to 0.65 if still large
+        let out = canvas.toDataURL('image/jpeg', 0.85);
+        if (out.length > 6200000) out = canvas.toDataURL('image/jpeg', 0.65);
+        fileBase64 = out;
+        document.getElementById('previewImg').src = fileBase64;
+        document.getElementById('previewWrap').style.display = 'block';
+        document.getElementById('uploadZone').style.display  = 'none';
+        document.getElementById('sendBtn').disabled = false;
+      };
+      img.src = ev.target.result;
     };
     reader.readAsDataURL(file);
   }
